@@ -10,17 +10,19 @@ import "./App.css";
 // Import drawing utility here
 import { drawRectangle } from "./utilities";
 
-// Import Amplify Package 
+// Import Amplify Package's and Auth
 import { Amplify, Auth } from 'aws-amplify';
 import awsconfig from './aws-exports';
 import { withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 import awsExports from './aws-exports';
 
+// Amplify DataStore
+import { DataStore } from '@aws-amplify/datastore';
+import { LoginList } from './models';
+
 Amplify.configure(awsconfig);
 Amplify.configure(awsExports);
-
-
 
 function App({ signOut, user }) {
   const webcamRef = useRef(null);
@@ -30,13 +32,24 @@ function App({ signOut, user }) {
   const runCoco = async () => {
     // Load network 
     const net = await cocossd.load();
+    // Save login to database
+    await DataStore.save(
+      new LoginList({
+      "UID": user.username
+    })
+    );
 
+    // get login list
+    const models = await DataStore.query(LoginList);
+    console.log(models.length)
     //  Loop and detect
     setInterval(() => {
       detect(net);
     }, 16.7);
   };
 
+
+  
   const detect = async (net) => {
     // Check data is available
     if (
@@ -60,7 +73,7 @@ function App({ signOut, user }) {
 
       // Make Detections
       const obj = await net.detect(video);
-      console.log(obj);
+      console.debug(obj);
 
       // Draw mesh
       const canvas = canvasRef.current.getContext("2d");
@@ -76,7 +89,7 @@ function App({ signOut, user }) {
     <div className="App">
       <h1>
         <img src='/pawTracksLogo192.png' alt='logo' height='32px' width='32px'/>
-        Paw Tracks: Hello World {user.username}
+        Paw Tracks: Hello {user.username}
         </h1>
         <button onClick={signOut}>Sign out</button>
       <header className="App-header">
