@@ -1,0 +1,92 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplify3e9a8b2f87c04-staging-131841-authRole",
+      "UnauthRoleArn": "arn:aws:iam::251206035128:role/amplify-amplify3e9a8b2f87c04-staging-131841-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::251206035128:role/amplify-amplify3e9a8b2f87c04-staging-131841-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-amplify3e9a8b2f87c04-staging-131841-deployment",
+      "UnauthRoleName": "amplify-amplify3e9a8b2f87c04-staging-131841-unauthRole",
+      "StackName": "amplify-amplify3e9a8b2f87c04-staging-131841",
+      "StackId": "arn:aws:cloudformation:us-east-2:251206035128:stack/amplify-amplify3e9a8b2f87c04-staging-131841/203148e0-998e-11ed-b580-02eb77c808b4",
+      "AmplifyAppId": "dhb5nikcq1fyr"
+    }
+  },
+  "api": {
+    "PawTracks": {
+      "dependsOn": [],
+      "output": {
+        "authConfig": {
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ],
+          "defaultAuthentication": {
+            "authenticationType": "API_KEY",
+            "apiKeyConfig": {
+              "apiKeyExpirationDays": 30,
+              "description": "api key description"
+            }
+          }
+        },
+        "GraphQLAPIIdOutput": "lwq5ibgkbnalbjr4ekogdxlrbi",
+        "GraphQLAPIEndpointOutput": "https://xjhbxpyrxrh7dnxgt6m6mhspyy.appsync-api.us-east-2.amazonaws.com/graphql",
+        "GraphQLAPIKeyOutput": "da2-6ymye4p5dzcwjjgmwusrveeni4"
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "AppSync",
+      "lastPushTimeStamp": "2023-01-21T20:04:41.341Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify3e9a8b2f87c04-staging-131841-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "logicalId": "apiPawTracks"
+      },
+      "lastPushDirHash": "iYG5e5L7eg+g1OrWcmqF+iM9Ri0="
+    }
+  },
+  "auth": {
+    "PawTracks": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": [
+            "REQUIRES_LOWERCASE",
+            "REQUIRES_NUMBERS",
+            "REQUIRES_SYMBOLS",
+            "REQUIRES_UPPERCASE"
+          ]
+        },
+        "signupAttributes": [
+          "NAME"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "output": {
+        "UserPoolId": "us-east-2_AT2GWYrL1",
+        "AppClientIDWeb": "6j6v81a8k9hacphg73kvtbtse1",
+        "AppClientID": "2bv8j0c4pe5nmp0siv0rmussjh",
+        "IdentityPoolId": "us-east-2:2f066174-ba45-4345-a356-93bb421ca406",
+        "UserPoolArn": "arn:aws:cognito-idp:us-east-2:251206035128:userpool/us-east-2_AT2GWYrL1",
+        "IdentityPoolName": "testAuthIdentityPool__staging",
+        "UserPoolName": "PawTracks"
+      },
+      "lastPushTimeStamp": "2023-01-21T20:04:41.282Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify3e9a8b2f87c04-staging-131841-deployment/amplify-cfn-templates/auth/PawTracks-cloudformation-template.json",
+        "logicalId": "authPawTracks"
+      }
+    }
+  }
+}
