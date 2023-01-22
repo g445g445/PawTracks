@@ -32,16 +32,18 @@ function App({ signOut, user }) {
   const runCoco = async () => {
     // Load network 
     const net = await cocossd.load();
-    // Save login to database
+
+    // Save login to database TODO:Remove, this is a poc of impimentation
     await DataStore.save(
       new LoginList({
       "UID": user.username
     })
     );
 
-    // get login list
+    // get login list TODO:Remove, this is a poc of impimentation
     const models = await DataStore.query(LoginList);
     console.log(models.length)
+
     //  Loop and detect
     setInterval(() => {
       detect(net);
