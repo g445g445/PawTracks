@@ -1,0 +1,13 @@
+{
+    "AppSyncApiName": "PawTracks",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": false,
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "S3DeploymentBucket": "amplify-amplify3e9a8b2f87c04-staging-131841-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/26f5b9df35a81995bb631101273ee88174180f08"
+}
