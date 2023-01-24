@@ -1,0 +1,5 @@
+type LoginList @model @auth(rules: [{allow: public}, {allow: private}]) {
+  id: ID!
+  UID: String
+}
+ 
