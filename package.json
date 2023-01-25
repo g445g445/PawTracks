@@ -40,7 +40,6 @@
     ]
   },
   "devDependencies": {
-    "jest": "^29.4.0"
   }
   
 }
