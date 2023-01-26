@@ -1,0 +1,28 @@
+#video-canvas {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 6;
+    width: 640;
+    height: 480;
+    margin-top: 100px;
+}
+
+#webcam {
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 5;
+    width: 640;
+    height: 480;
+    margin-top: 100px;
+    border: 2px solid #000000;
+    border-radius: 9px;
+    box-shadow: 4px 4px;
+}
