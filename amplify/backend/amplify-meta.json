@@ -50,7 +50,7 @@
         "GraphQLAPIKeyOutput": "da2-fakeApiId123456"
       },
       "providerPlugin": "awscloudformation",
-      "lastPushTimeStamp": "2023-01-22T04:57:38.896Z",
+      "lastPushTimeStamp": "2023-01-25T01:39:14.571Z",
       "providerMetadata": {
         "s3TemplateURL": "https://s3.amazonaws.com/amplify-amplify3e9a8b2f87c04-staging-131841-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "logicalId": "apiPawTracks"
