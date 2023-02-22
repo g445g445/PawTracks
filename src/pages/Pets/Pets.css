@@ -1,0 +1,31 @@
+.Pet-card {
+  border: 3px solid #020202;
+  border-radius: 9px;
+  width: 275px;
+  height: auto;
+  align-items: center;
+  background-color: #8FC1E3;
+  box-shadow: 4px 4px;
+  position: relative; /* add position relative */
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: auto;
+  grid-gap: 1rem;
+}
+
+.edit-link {
+  position: absolute;
+  top: 0px;
+  right: 30px;
+  z-index: 1; /* add z-index */
+}
+
+.delete-button {
+  position: absolute;
+  top: 0px;
+  right: 60px;
+  z-index: 1; /* add z-index */
+}

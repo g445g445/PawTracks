@@ -17,6 +17,20 @@
       },
       "api": {
         "PawTracks": {}
+      },
+      "storage": {
+        "pawtracks8eb0888e": {
+          "bucketName": "pawtracks-videostore115533-dev",
+          "region": "us-east-2"
+        },
+        "s3pawtracksvideostore204113dev": {}
+      }
+    }
+  },
+  "mcdenv": {
+    "categories": {
+      "auth": {
+        "PawTracks": {}
       }
     }
   }

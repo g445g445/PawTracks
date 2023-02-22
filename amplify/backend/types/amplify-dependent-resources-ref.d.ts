@@ -16,5 +16,11 @@ export type AmplifyDependentResourcesAttributes = {
       "UserPoolId": "string",
       "UserPoolName": "string"
     }
+  },
+  "storage": {
+    "s3pawtracksvideostore204113dev": {
+      "BucketName": "string",
+      "Region": "string"
+    }
   }
 }
