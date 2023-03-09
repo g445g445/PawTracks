@@ -10,6 +10,10 @@ import { IoCameraReverse } from 'react-icons/io5';
 
 import VideoUploadExtended from '../../controllers/VideoUploadExtended';
 
+import OpenMicSet from '../../controllers/PlayAudio';
+import micOn from '../../../public/mic-microphone-icon.png';
+import localforage from "localforage";
+
 function Home() {
     // Reference Variable for the Detection Canvas
     const canvasRef = useRef(null);
@@ -31,6 +35,10 @@ function Home() {
 
     const netRef = useRef(null);
     const detectionsRef = useRef(null);
+
+    //Audio vars
+    let audio = new Audio();
+    const[buttonMic, setButtonMic] = useState(false);
 
     var cameraSelect = "user";
 
@@ -233,6 +241,17 @@ function Home() {
         canvas.stroke()
     };
 
+    function playAudio()
+  {
+    localforage.getItem("currentFile").then((value) => {
+      const file = value;
+      audio = new Audio(URL.createObjectURL(file));
+      audio.play();
+    }).catch((error) => {
+      console.error(error);
+    });
+  }
+
     useEffect(() => {prepare_stream(cameraSelect)}, [])
 
     return (
@@ -264,6 +283,10 @@ function Home() {
                     }
                     prepare_stream(cameraSelect)
                 }}><IoCameraReverse /></button>
+                <img src={micOn} onClick={() => setButtonMic(true)} className="Mic-set" alt="Mic Settings"></img>
+                <OpenMicSet trigger={buttonMic} setTrigger={setButtonMic}>
+                    <h3>Edit Audio</h3>
+                </OpenMicSet>
             </div>
 
             {/* Temporary Clips Storage */}
