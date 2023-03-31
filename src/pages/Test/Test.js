@@ -2,6 +2,7 @@ import './Test.css';
 import React, { useRef, useEffect, useState } from 'react';
 
 import * as cocossd from "@tensorflow-models/coco-ssd";
+import { loadGraphModel } from '@tensorflow/tfjs';
 
 function Test() {
     const canvasRef = useRef(null);
@@ -12,10 +13,22 @@ function Test() {
     const lastDetectionsRef = useRef([]);
     const netRef = useRef(null);
     const detectionsRef = useRef(null);
-
     const [videoSrc, setVideoSrc] = useState([]);
-
     const inputRef = useRef(null);
+
+    const filteredDetections = null;
+
+    var minConfidence = 0;
+
+    let text = '{"categories": [' + 
+        '{"supercategory": "person", "id": 1, "name": "person"},' + 
+        '{"supercategory": "animal", "id": 2, "name": "dog"},' + 
+        '{"supercategory": "animal", "id": 3, "name": "cat"},' + 
+        '{"supercategory": "animal", "id": 4, "name": "bird"},' + 
+        '{"supercategory": "furniture", "id": 5, "name": "bed"},' + 
+        '{"supercategory": "furniture", "id": 6, "name": "couch"},' + 
+        '{"supercategory": "kitchen", "id": 7, "name": "bowl"} ]}';
+    const model = JSON.parse(text);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -48,13 +61,15 @@ function Test() {
     }
 
     async function liveDetections() {
-        // Sets the detection canvas properties to that of the videoElement
-        console.log("Width: " + width + " Height: " + height);
+        // Sets the detection canvas properties to that of the videoElements
         canvasRef.current.width = width;
         canvasRef.current.height = height;
-
         // Detects objects in our videoElement using our model
-        const detections = await netRef.current.detect(document.getElementById('video'));
+        const detections = await netRef.current.detect(document.getElementById('video')); //Should have minScore
+        /*let filteredDetections = detections.filter(prediction => {
+            return categories.includes(prediction.class);
+        });
+        detectionsRef.current = filteredDetections;*/
         detectionsRef.current = detections;
         console.debug(detections);
 
@@ -72,7 +87,6 @@ function Test() {
             var confidence = parseFloat(prediction['score'].toFixed(2));
 
             // Which objects to detect
-            if (confidence > 0.0) {
                 if (text == 'person') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#F7F9FB'
@@ -97,7 +111,6 @@ function Test() {
                     var color = 'black'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-            }
         })
     };
 
@@ -118,9 +131,10 @@ function Test() {
             <h1>Test Video Page: </h1>
             <div id="test-container">
                 <input ref={inputRef} className="videoInput_input" type="file" onInput={handleFileChange} accept=".mov,.mp4" />
-                <canvas className="video=prop" id="video-canvas" ref={canvasRef} />
-                <video id="video" autoPlay loop muted src={videoSrc}></video>
-                {/*<div className="videoFooter">{videoSrc || "Nothing Selected"}</div>*/}
+                <div id="videoContainer">
+                    <canvas className="video=prop" id="video-canvas" ref={canvasRef} />
+                    <video id="video" autoPlay loop muted src={videoSrc}></video>
+                </div>
             </div>
         </>
     )

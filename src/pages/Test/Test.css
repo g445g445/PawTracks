@@ -56,3 +56,7 @@
     height: auto;
     width: auto;
 }
+
+#video-container{
+    display: none;
+}

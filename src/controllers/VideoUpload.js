@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useParams } from 'react-router-dom';
 import { Storage } from "@aws-amplify/storage"
+import { DataStore } from '@aws-amplify/datastore';
+import { Session } from '../models';
 
 const VideoUpload = () => {
     // Declare a state variable to store the selected file
@@ -21,6 +23,32 @@ const VideoUpload = () => {
             level: "private",
             contentType: file.type,
         });
+
+        // Create a clips object with the necessary information
+        const clips = {
+            "Clips": [
+                {
+                    "start": "start time",
+                    "end": "end time",
+                    "IncidentList": [
+                        "type, petType, time",
+                        "type, petType, time"
+                    ],
+                    "fileName": `${id}.mp4`
+                }
+            ]
+        };
+
+        // Create a session object with the clips object
+        const session = new Session({
+            "start": "1970-01-01T12:30:23.999Z",
+            "end": "1970-01-01T12:30:23.999Z",
+            "clip": clips
+        });
+
+        // Save the session object to the Datastore
+        await DataStore.save(session);
+
         console.log("Video File uploaded successfully");
     };
 

@@ -1,60 +1,71 @@
-*{
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    font-family: 'Outfit', sans-serif;
-}
-
-:root{
-    --mainColor: #8FC1E3;
-    --secondaryColor: #3170BE;
-    --backgroundColor: #F7F9FB;
-    --textColor: #000000;
-}
-
 .footer {
-    /*display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 80px;
-    padding: 0 2 rem;
-    background-color: var(--secondaryColor);
-    color: var(--textColor);
-    margin-top: -80px;*/
-    position: fixed;
+    position: absolute;
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 100px;
     padding: 0 2rem;
     width: 100%;
+    left: 0;
     bottom: 0;
+    right: 0;
+    
     color: var(--textColor);
     border-top: 2px solid #000000;
     background-color: var(--backgroundColor);
     z-index: 7;
+    /* border: solid 3px palegreen;
+    background: linear-gradient(yellow, yellow) no-repeat center/2px 100%; */
+}
+
+.footer .logoWrapper {
+
+}
+
+.footer .imgLogo{
+
+}
+
+.footer .textLogo{
+    /* border: solid 3px pink; */
+}
+
+.footer .navItem{
+    padding-right: 2rem;
+    color: var(--textColor);
+    text-decoration: none;
+    font-weight: 200;
+    font-size: 1.5rem;
+
+    /* border: solid 3px pink; */
+}
+
+.footer .navItem:last-child{
+    padding-right: 0;
 }
 
 @media only screen and (max-width: 1024px){
-    .footer-logo, .github_link {
+    .footer .logoWrapper, .githubLink{
         display: none;
     }
 
-    .nav-items {
-        margin: 0 1rem;
-        color: var(--textColor);
-        text-decoration: none;
-        font-weight: 200;
-        font-size: 18px;
+    .footer .mobileNavBar{
+        margin-left: auto;
+        margin-right: auto;
+        /* border: solid 3px black;
+        background: linear-gradient(red, red) no-repeat center/2px 100%; */
     }
 
+    .footer .navItem{
+        padding-right: 1.5rem;
+    }
+    
+    .footer .navItem:last-child{
+        padding-right: 0;
+    }
 }
 
-.nav-items:hover {
-    text-decoration: underline;
-}
-
-.github_link {
+.githubLink {
     position: absolute;
     left: 50%;
     top: 30%;

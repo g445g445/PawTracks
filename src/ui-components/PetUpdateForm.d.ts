@@ -50,6 +50,7 @@ export declare type PetUpdateFormProps = React.PropsWithChildren<{
     onSubmit?: (fields: PetUpdateFormInputValues) => PetUpdateFormInputValues;
     onSuccess?: (fields: PetUpdateFormInputValues) => void;
     onError?: (fields: PetUpdateFormInputValues, errorMessage: string) => void;
+    onCancel?: () => void;
     onChange?: (fields: PetUpdateFormInputValues) => PetUpdateFormInputValues;
     onValidate?: PetUpdateFormValidationValues;
 } & React.CSSProperties>;

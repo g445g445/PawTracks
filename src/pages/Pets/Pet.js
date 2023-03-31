@@ -9,12 +9,16 @@ import VideoUpload from '../../controllers/VideoUpload';
 import VideoDownload from '../../controllers/VideoDownload';
 import { PetUpdateForm } from '../../ui-components';
 
+import { useNavigate } from 'react-router-dom';
+
 import './Pet.css';
 
 
 function Pet() {
   // Get the ID parameter from the URL using `useParams` hook
   const { id } = useParams();
+
+  let navigate = useNavigate();
 
   // Declare state variable to store the pet object
   const [pet, setPet] = useState([]);
@@ -48,7 +52,9 @@ function Pet() {
       );
       // Update the `pet` state variable with the new data
       setPet(fields);
+
       console.log('Updated successfully');
+      navigate('/pets');
     } catch (error) {
       console.log('Error updating pet', error);
     }
@@ -57,14 +63,8 @@ function Pet() {
   // Render the pet information on the page
   return (
     <>
-      <h1>Single Pet Page: {pet.name} </h1>
-      <p>Weight: {pet.weight}</p>
-      <p>Age: {pet.age}</p>
-      <p>Type: {pet.type}</p>
-      <p>Breed: {pet.breed}</p>
-      <p>Description: {pet.desc}</p>
-      <br />
-      <hr />
+      <h1>Edit Pet: {pet.name}</h1>
+  
       <PetUpdateForm pet={pet} onSubmit={handleUpdate} />
       <br />
       <hr />
@@ -74,9 +74,6 @@ function Pet() {
       <hr />
       <VideoUpload />
       <VideoDownload />
-      <br />
-      <br />
-      <br />
       <br />
     </>
   )

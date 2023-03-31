@@ -48,6 +48,7 @@ export declare type PetCreateFormProps = React.PropsWithChildren<{
     onSubmit?: (fields: PetCreateFormInputValues) => PetCreateFormInputValues;
     onSuccess?: (fields: PetCreateFormInputValues) => void;
     onError?: (fields: PetCreateFormInputValues, errorMessage: string) => void;
+    onCancel?: () => void;
     onChange?: (fields: PetCreateFormInputValues) => PetCreateFormInputValues;
     onValidate?: PetCreateFormValidationValues;
 } & React.CSSProperties>;

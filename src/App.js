@@ -50,11 +50,30 @@ function App({ user }) {
       });
   };
 
+  const tricks = {
+    Dog: {
+        Sit: {name: 'Sit', embedId: "EDgi2sLlWAU", description: 'Teach your dog how to sit on command.'},
+        Shake: {name: 'Shake', embedId: "G3-hec29wII", description: 'Teach your dog how to shake on command.'},
+        Lay: {name: 'Lay', embedId: "hHKtUp9-xbc", description: 'Teach your dog how to lay on command.'}
+    },
+    Cat: {
+        Come: {name: 'Come', embedId: "OFjlF7zQF_g", description: 'Teach your cat how to come on command.'},
+        HighFive: {name: 'High Five', embedId: "4NWS0mtjMuw", description: 'Teach your cat how to high five on command.'},
+        Stay: {name: 'Stay', embedId: "WLetRnjCEtU", description: 'Teach your cat how to stay on command.'}
+    },
+    Bird: {
+        Talk: {name: 'Talk', embedId: "PiPk8GS8UqM", description: 'Teach your bird how to talk on command.'},
+        PlayDead: {name: 'Play Dead', embedId: "RZ4dJ7nV1wI", description: 'Teach your bird how to play dead on command.'},
+        Fly: {name: 'Fly', embedId: "oHFkF4ZQp_4", description: 'Teach your bird how to fly on command.'}
+    }
+}
   //Return app Router Navigation
   return (
     <div className="App">
       <Router>
         <Navbar firstName={user.attributes.name.split(' ')[0]} signOut={signOut}> </Navbar>
+        <img src='pawTrack.png' className='bigPawTrack'></img>
+        <div className='mainContent'>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/clips' element={<Clips />} />
@@ -64,10 +83,11 @@ function App({ user }) {
           <Route path='/pets/:id' element={<Pet />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/test' element={<Test />} />
-          <Route path='/tricks' element={<Tricks />} />
-          <Route path='/tricks/:trick' element={<Trick />} />
+          <Route path='/tricks' element={<Tricks tricks={tricks} />} />
+          <Route path='/tricks/:trick' element={<Trick tricks={tricks} />} />
           <Route path='*' element={<NotFound />} />
         </Routes>
+        </div>
         <Footer />
       </Router>
     </div>

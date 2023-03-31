@@ -16,7 +16,7 @@ const PhotoUpload = () => {
         console.log(id);
     };
 
-    // Event handler for file upload
+    // Event handler for file upload 
     const handleUpload = async () => {
         // Use Amplify Storage to upload the file with the given ID as filename
         await Storage.put(`${id}.png`, file, {
