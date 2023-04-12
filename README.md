@@ -1,29 +1,14 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![Logo](public/pawTracksLogo192.png)
 
-## Learn More
+# PawTracks
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+An online petsitter powered by TensorFlow allowing users to monitor their pet through a webcam or a mobile device.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
+## Features
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-Bump1
+- Automated clip recording and storage
+- Support for Dogs, Cats, and Birds
+- Mobile device support
+- Pet information management
+- A compilation of extra resources to help train your pet
