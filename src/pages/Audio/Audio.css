@@ -1,0 +1,59 @@
+.Mic-Sound-On{
+    width: 16px;
+    height: 24px;
+  }
+  
+  .Mic-Sound-Off{
+    width: 19px;
+    height: 24px;
+  }
+  
+  .Mic-set-window{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100vh;
+    backdrop-filter: blur(8px);
+    border: 1px;
+    border-color: black;
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .Mic-set-content{
+    position: relative;
+    padding: 32px;
+    width: 100%;
+    max-width: 640px;
+    background-color: aliceblue;
+    color: black;
+  }
+  
+  .Close-Mic-set{
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+  
+  #Mic-Record-btn {
+    background-color: green;
+    color: var(--backgroundColor);
+    padding:  5px 15px;
+    border-radius: 20px;
+    border: none;
+    margin: 10px;
+    font-weight: 700;
+  }
+  
+  #Mic-Stop-btn {
+    background-color: red;
+    color: var(--backgroundColor);
+    padding:  5px 15px;
+    border-radius: 20px;
+    border: none;
+    margin: 10px;
+    font-weight: 700;
+  }

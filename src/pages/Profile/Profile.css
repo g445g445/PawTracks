@@ -1,0 +1,14 @@
+#restrictedAreaSelect {
+    color: var(--textColor);
+    background-color: var(--backgroundColor);
+    border: solid 3px var(--secondaryColor);
+    margin: 10px;
+}
+
+.restrictedPetSelect {
+    color: var(--textColor);
+    background-color: var(--backgroundColor);
+    border: solid 3px var(--secondaryColor);
+    width: 500px;
+    margin: 10px;
+}

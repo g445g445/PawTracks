@@ -7,7 +7,7 @@ import App from './App';
 import { Amplify, AuthModeStrategyType } from 'aws-amplify'
 import awsconfig from './aws-exports'
 
-import {ThemeProvider, createTheme } from "@aws-amplify/ui-react"
+import { ThemeProvider, createTheme } from "@aws-amplify/ui-react"
 import { studioTheme } from './ui-components';
 
 const updatedTheme = createTheme({
@@ -21,6 +21,11 @@ const updatedTheme = createTheme({
           },
           color: {
             value: "var(--backgroundColor)"
+          },
+          _hover : {
+            backgroundColor: {
+              value: "black"
+            }
           }
         }
       }
@@ -42,7 +47,7 @@ ReactDOM.render(
       <App />
     </ThemeProvider>
   </React.StrictMode>,
-  
+
   document.getElementById('root')
 );
 

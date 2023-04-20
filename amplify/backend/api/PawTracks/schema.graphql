@@ -1,0 +1,34 @@
+type UserSettings @model @auth(rules: [{allow: public, operations: [read]}, {allow: owner}]) {
+  id: ID!
+  settings: AWSJSON!
+}
+
+type Session @model @auth(rules: [{allow: public, operations: [read]}, {allow: owner}]) {
+  id: ID!
+  start: AWSDateTime!
+  end: AWSDateTime!
+  clip: AWSJSON
+}
+
+enum PetType {
+  DOG
+  CAT
+  BIRD
+}
+
+type Pet @model @auth(rules: [{allow: owner}, {allow: public, operations: [read]}]) {
+  id: ID!
+  name: String!
+  weight: Int!
+  age: Int!
+  type: PetType!
+  breed: String!
+  desc: String
+  img: String
+}
+
+type LoginList @model @auth(rules: [{allow: public}, {allow: private}]) {
+  id: ID!
+  UID: String
+}
+ 

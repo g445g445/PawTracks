@@ -31,8 +31,7 @@ function Tricks(props) {
 
     let dogTricks = [];
     for(var key in tricks['Dog']) {
-        dogTricks.push(<Link to={`/tricks/${key}`} className='cardLinks'><Card className='trickCard'><h2>{tricks['Dog'][key]['name']}</h2>
-        <a>{tricks['Dog'][key]['description']}</a></Card></Link>);
+        dogTricks.push(<Link to={`/tricks/${key}`} className='cardLinks'><Card className='trickCard'><h2>{tricks['Dog'][key]['name']}</h2><a>{tricks['Dog'][key]['description']}</a></Card></Link>);
     }
 
     let catTricks = [];
@@ -44,13 +43,6 @@ function Tricks(props) {
     for(var key in tricks['Bird']) {
         birdTricks.push(<Link to={`/tricks/${key}`} className='cardLinks'><Card className='trickCard'><h2>{tricks['Bird'][key]['name']}</h2><a>{tricks['Bird'][key]['description']}</a></Card></Link>);
     }
-
-    let allPets = [];
-
-    allPets.push(dogTricks);
-    allPets.push(catTricks);
-    allPets.push(birdTricks);
-
 
     return (
         <>  

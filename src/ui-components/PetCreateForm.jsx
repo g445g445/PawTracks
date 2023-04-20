@@ -36,7 +36,6 @@ export default function PetCreateForm(props) {
     type: undefined,
     breed: "",
     desc: "",
-    img: "",
   };
   const [name, setName] = React.useState(initialValues.name);
   const [weight, setWeight] = React.useState(initialValues.weight);
@@ -44,7 +43,6 @@ export default function PetCreateForm(props) {
   const [type, setType] = React.useState(initialValues.type);
   const [breed, setBreed] = React.useState(initialValues.breed);
   const [desc, setDesc] = React.useState(initialValues.desc);
-  const [img, setImg] = React.useState(initialValues.img);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setName(initialValues.name);
@@ -53,7 +51,6 @@ export default function PetCreateForm(props) {
     setType(initialValues.type);
     setBreed(initialValues.breed);
     setDesc(initialValues.desc);
-    setImg(initialValues.img);
     setErrors({});
   };
   const validations = {
@@ -63,7 +60,6 @@ export default function PetCreateForm(props) {
     type: [{ type: "Required" }],
     breed: [{ type: "Required" }],
     desc: [],
-    img: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -96,7 +92,6 @@ export default function PetCreateForm(props) {
           type,
           breed,
           desc,
-          img,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -157,7 +152,6 @@ export default function PetCreateForm(props) {
               type,
               breed,
               desc,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -191,7 +185,6 @@ export default function PetCreateForm(props) {
               type,
               breed,
               desc,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.weight ?? value;
@@ -225,7 +218,6 @@ export default function PetCreateForm(props) {
               type,
               breed,
               desc,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.age ?? value;
@@ -255,7 +247,6 @@ export default function PetCreateForm(props) {
               type: value,
               breed,
               desc,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.type ?? value;
@@ -301,7 +292,6 @@ export default function PetCreateForm(props) {
               type,
               breed: value,
               desc,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.breed ?? value;
@@ -331,7 +321,6 @@ export default function PetCreateForm(props) {
               type,
               breed,
               desc: value,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.desc ?? value;
@@ -345,36 +334,6 @@ export default function PetCreateForm(props) {
         errorMessage={errors.desc?.errorMessage}
         hasError={errors.desc?.hasError}
         {...getOverrideProps(overrides, "desc")}
-      ></TextField>
-      <TextField
-        label="Img"
-        isRequired={false}
-        isReadOnly={false}
-        value={img}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              name,
-              weight,
-              age,
-              type,
-              breed,
-              desc,
-              img: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.img ?? value;
-          }
-          if (errors.img?.hasError) {
-            runValidationTasks("img", value);
-          }
-          setImg(value);
-        }}
-        onBlur={() => runValidationTasks("img", img)}
-        errorMessage={errors.img?.errorMessage}
-        hasError={errors.img?.hasError}
-        {...getOverrideProps(overrides, "img")}
       ></TextField>
       <Flex
         justifyContent="space-between"

@@ -6,13 +6,6 @@ html {
   box-sizing: inherit;
 }
 
-:root{
-  --mainColor: #8FC1E3;
-  --secondaryColor: #3170BE;
-  --backgroundColor: #F7F9FB;
-  --textColor: #000000;
-}
-
 h1 {
   -webkit-user-select: none; /* Safari */
   -ms-user-select: none; /* IE 10 and IE 11 */
@@ -183,9 +176,16 @@ h1 {
   padding-top: 1rem;
 }
 
-.edit-link {
+.edit-button {
   position: relative;
   z-index: 1; /* add z-index */
+  background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
 }
 
 .delete-button {
@@ -200,13 +200,13 @@ h1 {
 	outline: inherit;
 }
 
-.edit-link .edit-icon, .delete-button .delete-icon {
+.edit-button .edit-icon, .delete-button .delete-icon {
   color: #000000;
   border: 3px solid #ffffff;
   transition: 0.3s;
 }
 
-.edit-link:hover .edit-icon, .delete-button:hover .delete-icon {
+.edit-button:hover .edit-icon, .delete-button:hover .delete-icon {
   color: var(--secondaryColor);
   border: 3px solid var(--secondaryColor);
   border-radius: 9px;
@@ -219,4 +219,41 @@ h1 {
 
 .pet-card:hover .pet-content .pet-buttons .edit-icon, .pet-card:hover .pet-content .pet-buttons .delete-button .delete-icon  {
   font-size: 2.5rem;
+}
+
+.pet-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  border: 1px solid #ccc;
+  background: #fff;
+  overflow: auto;
+  border-radius: 0.5rem;
+  outline: none;
+  padding: 1rem;
+}
+
+.pet-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(1rem);
+}
+
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 500ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close {
+  opacity: 0;
 }

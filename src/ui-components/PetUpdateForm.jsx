@@ -12,6 +12,7 @@ import {
   Grid,
   SelectField,
   TextField,
+  useTheme,
 } from "@aws-amplify/ui-react";
 import { getOverrideProps } from "@aws-amplify/ui-react/internal";
 import { Pet } from "../models";
@@ -30,6 +31,7 @@ export default function PetUpdateForm(props) {
     overrides,
     ...rest
   } = props;
+  const { tokens } = useTheme();
   const initialValues = {
     name: "",
     weight: "",
@@ -37,7 +39,6 @@ export default function PetUpdateForm(props) {
     type: undefined,
     breed: "",
     desc: "",
-    img: "",
   };
   const [name, setName] = React.useState(initialValues.name);
   const [weight, setWeight] = React.useState(initialValues.weight);
@@ -45,7 +46,6 @@ export default function PetUpdateForm(props) {
   const [type, setType] = React.useState(initialValues.type);
   const [breed, setBreed] = React.useState(initialValues.breed);
   const [desc, setDesc] = React.useState(initialValues.desc);
-  const [img, setImg] = React.useState(initialValues.img);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = petRecord
@@ -57,7 +57,6 @@ export default function PetUpdateForm(props) {
     setType(cleanValues.type);
     setBreed(cleanValues.breed);
     setDesc(cleanValues.desc);
-    setImg(cleanValues.img);
     setErrors({});
   };
   const [petRecord, setPetRecord] = React.useState(pet);
@@ -76,7 +75,6 @@ export default function PetUpdateForm(props) {
     type: [{ type: "Required" }],
     breed: [{ type: "Required" }],
     desc: [],
-    img: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -97,9 +95,9 @@ export default function PetUpdateForm(props) {
   return (
     <Grid
       as="form"
-      rowGap="15px"
-      columnGap="15px"
-      padding="20px"
+      rowGap={tokens.space.xxxs.value}
+      columnGap={tokens.space.xxxs.value}
+      padding={tokens.space.xxxl.value}
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
@@ -109,7 +107,6 @@ export default function PetUpdateForm(props) {
           type,
           breed,
           desc,
-          img,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -171,7 +168,6 @@ export default function PetUpdateForm(props) {
               type,
               breed,
               desc,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -205,7 +201,6 @@ export default function PetUpdateForm(props) {
               type,
               breed,
               desc,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.weight ?? value;
@@ -239,7 +234,6 @@ export default function PetUpdateForm(props) {
               type,
               breed,
               desc,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.age ?? value;
@@ -269,7 +263,6 @@ export default function PetUpdateForm(props) {
               type: value,
               breed,
               desc,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.type ?? value;
@@ -315,7 +308,6 @@ export default function PetUpdateForm(props) {
               type,
               breed: value,
               desc,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.breed ?? value;
@@ -345,7 +337,6 @@ export default function PetUpdateForm(props) {
               type,
               breed,
               desc: value,
-              img,
             };
             const result = onChange(modelFields);
             value = result?.desc ?? value;
@@ -359,36 +350,6 @@ export default function PetUpdateForm(props) {
         errorMessage={errors.desc?.errorMessage}
         hasError={errors.desc?.hasError}
         {...getOverrideProps(overrides, "desc")}
-      ></TextField>
-      <TextField
-        label="Img"
-        isRequired={false}
-        isReadOnly={false}
-        value={img}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              name,
-              weight,
-              age,
-              type,
-              breed,
-              desc,
-              img: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.img ?? value;
-          }
-          if (errors.img?.hasError) {
-            runValidationTasks("img", value);
-          }
-          setImg(value);
-        }}
-        onBlur={() => runValidationTasks("img", img)}
-        errorMessage={errors.img?.errorMessage}
-        hasError={errors.img?.hasError}
-        {...getOverrideProps(overrides, "img")}
       ></TextField>
       <Flex
         justifyContent="space-between"
@@ -405,7 +366,7 @@ export default function PetUpdateForm(props) {
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
         <Flex
-          gap="15px"
+          gap={tokens.space.xxxs.value}
           {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
         >
           <Button

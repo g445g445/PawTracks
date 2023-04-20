@@ -1,14 +1,12 @@
 // Import required dependencies
 import React, { useState } from "react";
 import { useParams } from 'react-router-dom';
-import { Storage } from "@aws-amplify/storage"
+import { Storage } from "@aws-amplify/storage";
 
-const PhotoUpload = () => {
+const PhotoUpload = ({id}) => {
     // Declare a state variable to store the selected file
     const [file, setFile] = useState(null);
-
-    // Get the ID parameter from the URL using `useParams` hook
-    const { id } = useParams();
+    
 
     // Event handler for file selection
     const handleFileChange = (event) => {
@@ -16,7 +14,7 @@ const PhotoUpload = () => {
         console.log(id);
     };
 
-    // Event handler for file upload 
+    // Event handler for file upload OLD
     const handleUpload = async () => {
         // Use Amplify Storage to upload the file with the given ID as filename
         await Storage.put(`${id}.png`, file, {
@@ -29,8 +27,10 @@ const PhotoUpload = () => {
     // Render a file input and a button to upload the selected file
     return (
         <div>
-            <input type="file" onChange={handleFileChange} />
-            <button onClick={handleUpload}>Upload File</button>
+            <input type="file" className="amplify-button amplify-field-group__control amplify-button--outline" onChange={handleFileChange} />
+            <br />
+            <br />
+            <button className="amplify-button amplify-field-group__control amplify-button--primary" onClick={handleUpload}>Upload File</button>
         </div>
     );
 };

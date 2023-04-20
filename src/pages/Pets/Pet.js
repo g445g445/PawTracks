@@ -1,7 +1,6 @@
 // Import required dependencies
 import React, { useEffect, useState } from 'react';
 import { DataStore } from '@aws-amplify/datastore';
-import { useParams } from 'react-router-dom';
 import { Pet as PetModel } from '../../models';
 import PhotoUpload from '../../controllers/PhotoUpload';
 import PhotoDownload from '../../controllers/PhotoDownload';
@@ -13,10 +12,10 @@ import { useNavigate } from 'react-router-dom';
 
 import './Pet.css';
 
-
-function Pet() {
-  // Get the ID parameter from the URL using `useParams` hook
-  const { id } = useParams();
+function Pet(props) {
+  
+  const {onFormClose, petId} = props;
+  console.log('props.petId', props.petId);
 
   let navigate = useNavigate();
 
@@ -27,14 +26,15 @@ function Pet() {
   useEffect(() => {
     const getDate = async () => {
       // Use the `query` method to retrieve the pet data from DataStore
-      const post = await DataStore.query(PetModel, id);
+      const post = await DataStore.query(PetModel, petId);
       // Update the `pet` state variable with the retrieved data
       setPet(post)
       // Log the retrieved pet data to the console
       console.log(post)
+      console.log('petId:', petId);
     }
     getDate();
-  }, [])
+  }, [petId])
   // Define the handleUpdate function
   const handleUpdate = async (fields) => {
     try {
@@ -60,22 +60,25 @@ function Pet() {
     }
   };
 
+  // Define the handleCancel function
+  const handleCancel = async (fields) => {
+    try {
+      navigate('/pets');
+    } catch (error) {
+      console.log('Cancellation error: ', error);
+    }
+  }
+
   // Render the pet information on the page
   return (
-    <>
+    <div className='edit-pet-container'>
       <h1>Edit Pet: {pet.name}</h1>
-  
-      <PetUpdateForm pet={pet} onSubmit={handleUpdate} />
       <br />
-      <hr />
-      <PhotoUpload />
-      <PhotoDownload />
+      {console.log("PET ID: " + petId)}
+      <PhotoUpload id={petId}/>
       <br />
-      <hr />
-      <VideoUpload />
-      <VideoDownload />
-      <br />
-    </>
+      <PetUpdateForm pet={pet} onSubmit={handleUpdate} onCancel={onFormClose} onSuccess={onFormClose} padding={'0'} />
+    </div>
   )
 }
 export default Pet

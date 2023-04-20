@@ -1,3 +1,15 @@
+#personBadge{
+  color: var(--personBackgroundColor);
+  background-color: var(--personColor);
+  margin: 0 5px;
+}
+
+#petOnObjectBadge {
+  color: white;
+  background-color: var(--petOnObjectBackgroundColor);
+  margin: 0 5px;
+}
+
 .cards {
     display: flex;
     flex-flow: row wrap;
@@ -37,3 +49,16 @@
     object-fit: cover;
   }
   
+  .clipLink {
+    text-decoration: none;
+  }  .loading-screen {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .loading-screen .loader {
+    width: 100px;
+    height: 100px;
+  }

@@ -57,7 +57,7 @@ function Home() {
     ];
 
     function resetClips() {
-        console.log("DateStore"+Object.isFrozen(clips.Clips.length - 1))
+        //console.log("DateStore"+Object.isFrozen(clips.Clips.length - 1))  //used to find what was freezing data object
         clips = { Clips: [] };
         sessionStartTime = null;
         sessionEndTime = null;
@@ -120,6 +120,7 @@ function Home() {
     }
 
     async function detectFrame() {
+        var IncidentType = []
         if (!shouldRecordRef.current) {
             stopRecording();
             return;
@@ -131,7 +132,9 @@ function Home() {
         petOnBedDetection = petOnBed(detectionsRef.current);
 
         if (personFound || petOnBedDetection) {
+            // Add Alert Types Here
             if (personFound) {
+                IncidentType.push(["Person"]);
                 console.log("Alert Type: Person");
             }
             if (petOnBedDetection) {
@@ -157,26 +160,30 @@ function Home() {
     }
 
     function petOnBed(detections) {
-        var dogBox = null;
+        var petBox = null;
         var bedBox = null;
+        var typeOfPet = null;
         detections.forEach(prediction => {
-            if (prediction['class'] === 'dog') {
-                dogBox = prediction['bbox']
+            if (prediction['class'] === 'dog' || prediction['class'] === 'cat' || prediction['class'] === 'bird') {
+                petBox = prediction['bbox']
+                typeOfPet = prediction['class']
             }
             if (prediction['class'] === 'bed') {
                 bedBox = prediction['bbox']
             }
         })
 
-        if ((!(dogBox === "undefined" || dogBox === null)) && (!(bedBox === "undefined" || bedBox === null))) {
-            if (bedBox[0] < dogBox[0] && bedBox[1] < dogBox[1]) {
-                if (((dogBox[0] + dogBox[2]) < (bedBox[0] + bedBox[2]))
-                    && ((dogBox[1] + dogBox[3]) < (bedBox[1] + bedBox[3]))) {
-                    //alert("THE DOG IS ON THE BED!!!!")
+        if ((!(petBox === "undefined" || petBox === null)) && (!(bedBox === "undefined" || bedBox === null))) {
+            if (bedBox[0] < petBox[0] && bedBox[1] < petBox[1]) {
+                if (((petBox[0] + petBox[2]) < (bedBox[0] + bedBox[2]))
+                    && ((petBox[1] + petBox[3]) < (bedBox[1] + bedBox[3]))) {
+                    alert("A " + typeOfPet +  "IS ON THE BED!!!!");
                     return true;
                 }
             }
         }
+
+        //IncidentType.push(["Pet On Bed", prediction['class']]);
         return false;
     };
 
@@ -190,18 +197,26 @@ function Home() {
         return foundPerson;
     };
 
+    // Define a function that starts recording a video clip
     function startRecording() {
+        // Check if a recording is already in progress
         if (recordingRef.current) {
-            return;
+            return; // If so, exit the function
         }
+        // Set a flag to indicate that a recording is in progress
         recordingRef.current = true;
-        const clipStarttTime = new Date();
-        console.log("Clip Start: " + new Date());
+        // Create a new Date object to mark the start time of the clip
+        const clipStartTime = new Date();
+        // Log the start time to the console
+        console.log("Clip Start: " + clipStartTime);
+        // Generate a new UUID for the clip title and store it in a ref
         currentClipTitleRef.current = uuidv4();
+        // Add a new clip object to the clips array with the start time, placeholder end time, incident list, and filename
         clips.Clips.push({
-            "start": clipStarttTime,
+            "start": clipStartTime,
             "end": "temp",
-            "IncidentList": [
+            "IncidentList":
+            [
                 "type, petType, time",
                 "type, petType, time"
             ],
@@ -209,30 +224,29 @@ function Home() {
         });
 
         recorderRef.current = new MediaRecorder(window.stream)
-
         recorderRef.current.ondataavailable = async function (e) {
             //saving the title as UID so that datastore and S3 can access the same record 
             const title = currentClipTitleRef.current;
             //currentClipTitleRef.current= title; // update the clip title reference
 
             console.log(Object.isFrozen(clips.Clips.length - 1))
-            
+
             //set clip name
             try {
                 clips.Clips[clips.Clips.length - 1].fileName = `${title}.mp4`;
                 clips.Clips[clips.Clips.length - 1].end = new Date();
+
+            //TODO: Add IncidentList here and pray that the data doesnt freeze and not update :)
+
             } catch (error) {
                 console.log("Could not update last title, refrence was in use" + error)
             }
 
-            console.log("Clip End: " + new Date());
-            console.log([clips.Clips.length - 1]);
+            //console.log("Clip End: " + new Date());
+            //console.log([clips.Clips.length - 1]);
 
             const href = URL.createObjectURL(e.data);
             console.log("Link to clip: " + href);
-            /* Just an idea
-            <VideoUploadExtended href={href} />
-            */
 
             setRecords(previousRecords => {
                 return [...previousRecords, { href, title }];
@@ -249,7 +263,7 @@ function Home() {
         console.log("uid: " + currentClipTitle);
         recordingRef.current = false;
         recorderRef.current.stop();
-        if(currentClipTitle != "" && currentClipTitle != null)  clips.Clips[clips.Clips.length - 1].fileName = `${currentClipTitle}.mp4`;
+        if (currentClipTitle != "" && currentClipTitle != null) clips.Clips[clips.Clips.length - 1].fileName = `${currentClipTitle}.mp4`;
         clips.Clips[clips.Clips.length - 1].end = new Date();
         // temp code for testing purposes
         //console.log(clips)
@@ -266,7 +280,7 @@ function Home() {
             if (confidence > 0.4) {
                 if (text === 'person') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
-                    var color = '#F7F9FB'
+                    var color = '#F7F9FB';
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
                 if (prediction['class'] === 'bed') {
@@ -304,10 +318,10 @@ function Home() {
 
     async function handleSessionEnd() {
         // Save session to datastore
-        console.log(clips)
-        console.log("DateStore"+Object.isFrozen(clips.Clips.length - 1))
+        //console.log(clips)
+        console.log("DateStore" + Object.isFrozen(clips.Clips.length - 1))
         await SaveSession(clips, sessionStartTime, sessionEndTime);
-        console.log("Session saved to datastore");
+        //console.log("Session saved to datastore");
         resetClips();
     }
 
@@ -319,7 +333,7 @@ function Home() {
                 <video className='video-prop' id="webcam" autoPlay playsInline muted ref={videoElement} />
                 <button id='home-btn' onClick={() => {
                     sessionStartTime = new Date();
-                    console.log("Session Start: " + new Date());
+                    console.log("SESSION Start: " + sessionStartTime);
                     shouldRecordRef.current = true;
                     homeButtonElement.current.setAttribute("hidden", true);
                     awayButtonElement.current.removeAttribute("hidden");
@@ -327,13 +341,12 @@ function Home() {
                 }} ref={homeButtonElement}><AiOutlineHome /> Home</button>
                 <button id='away-btn' onClick={() => {
                     sessionEndTime = new Date();
-                    console.log("Session End: " + new Date());
+                    console.log("SESSION END: " + sessionEndTime.toLocaleString());
                     shouldRecordRef.current = false;
                     awayButtonElement.current.setAttribute("hidden", true);
                     homeButtonElement.current.removeAttribute("hidden");
-                    console.log("CLips" + clips);
                     stopRecording();
-                    console.log("CLips" + clips);
+                    console.log("Clips" + clips);
                     handleSessionEnd();
                 }} ref={awayButtonElement}><BiCar /> Away</button>
                 <button id="swap-cam" onClick={() => {

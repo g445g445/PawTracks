@@ -4,11 +4,13 @@ import './AddPet.css';
 import { PetCreateForm } from '../../ui-components';
 
 
-function AddPet() {
+function AddPet(props) {
+    const {onFormClose} = props;
+
     return (
         <>
             <h1>Add Pet</h1>
-            <PetCreateForm />
+            <PetCreateForm onCancel={onFormClose} onSuccess={onFormClose} />
         </>
     )
     
