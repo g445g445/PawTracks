@@ -5,7 +5,7 @@ describe('status_check', function () {
     it('login_logout', function () {
         
         // Use the cy.viewport command to set the browser viewport size
-        cy.viewport(1920, 929)
+        cy.viewport(1920, 1080)
         
         // Use the cy.visit command to navigate to a web page
         cy.visit('http://localhost:3000/');
