@@ -1,48 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import YoutubeEmbed from '../../components/YoutubeEmbed';
 import './Trick.css';
 
 function Trick(props) {
-    console.log('Tricks: ' + Object.keys(props));
     const {trick} = useParams();
-    var embedId;
-    var title;
+    var embedId, bodyText, headerText;
+
 
     let tricks = props.tricks;
-    /* let tricks = {
-        Dog: {
-            Sit: {name: 'Sit', embedId: "EDgi2sLlWAU"},
-            Shake: {name: 'Shake', embedId: "G3-hec29wII"},
-            Lay: {name: 'Lay', embedId: "hHKtUp9-xbc"}
-        },
-        Cat: {
-            Come: {name: 'Come', embedId: "OFjlF7zQF_g"},
-            HighFive: {name: 'High Five', embedId: "4NWS0mtjMuw"},
-            Stay: {name: 'Stay', embedId: "WLetRnjCEtU"}
-        },
-        Bird: {
-            Talk: {name: 'Talk', embedId: "PiPk8GS8UqM"},
-            PlayDead: {name: 'Play Dead', embedId: "RZ4dJ7nV1wI"},
-            Fly: {name: 'Fly', embedId: "oHFkF4ZQp_4"}
-        }
-    } */
     
     for(var x in tricks) {
         for(var y in tricks[x]) {
             if(y === trick) {
                 embedId = tricks[x][y]["embedId"];
-                title = tricks[x][y]["title"];
+                bodyText = tricks[x][y]["body"];
+                headerText = tricks[x][y]["description"]
             }
         }
     }
-    
+
+    const [containerWidth, setContainerWidth] = useState(0);
+
+    useEffect(() => {
+        const updateContainerWidth = () => {
+            const width = document.querySelector('.video-container').offsetWidth;
+            setContainerWidth(width);
+            console.log(width)
+        };
+        updateContainerWidth();
+        window.addEventListener('resize', updateContainerWidth);
+        return () => window.removeEventListener('resize', updateContainerWidth);
+    }, []);
+
+    const containerHeight = containerWidth * 0.5625;
+
     return (
         <>
-            <h1>{title}</h1>
-            <YoutubeEmbed embedId={embedId}/>
+            <h1>{trick}</h1>
+            <div className="video-container" style={{ height: containerHeight }}>
+                <YoutubeEmbed embedId={embedId}/>
+            </div>
+            <div class="text-container">
+                <h2>{headerText}</h2>
+                <br />
+                <p>{bodyText}</p>  
+            </div>
+            <br /> <br />
         </>
     )
 }
 
-export default Trick
+export default Trick;

@@ -17,6 +17,7 @@ import Profile from "./pages/Profile/Profile";
 import Test from "./pages/Test/Test";
 import Trick from "./pages/Tricks/Trick";
 import Tricks from "./pages/Tricks/Tricks";
+import tricksData from './models/tricks.json';
 
 // Import Amplify Package's and Auth
 import { Amplify, API, Auth } from 'aws-amplify';
@@ -50,23 +51,8 @@ function App({ user }) {
       });
   };
 
-  const tricks = {
-    Dog: {
-        Sit: {name: 'Sit', embedId: "EDgi2sLlWAU", title: "How To Teach Your Dog To Sit", description: 'Teach your dog how to sit on command.'},
-        Shake: {name: 'Shake', embedId: "G3-hec29wII", title: "How To Teach Your Dog To Shake", description: 'Teach your dog how to shake on command.'},
-        Lay: {name: 'Lay', embedId: "hHKtUp9-xbc", title: "How To Teach Your Dog To Lay", description: 'Teach your dog how to lay on command.'}
-    },
-    Cat: {
-        Come: {name: 'Come', embedId: "OFjlF7zQF_g", title: "How To Teach Your Cat To Come", description: 'Teach your cat how to come on command.'},
-        HighFive: {name: 'High Five', embedId: "4NWS0mtjMuw", title: "How To Teach Your Cat To Give You A High Five", description: 'Teach your cat how to high five on command.'},
-        Stay: {name: 'Stay', embedId: "WLetRnjCEtU", title: "How To Teach Your Cat To Stay", description: 'Teach your cat how to stay on command.'}
-    },
-    Bird: {
-        Talk: {name: 'Talk', embedId: "PiPk8GS8UqM", title: "How To Teach Your Bird To Talk", description: 'Teach your bird how to talk on command.'},
-        PlayDead: {name: 'Play Dead', embedId: "RZ4dJ7nV1wI", title: "How To Teach Your Bird To Play Dead", description: 'Teach your bird how to play dead on command.'},
-        Fly: {name: 'Fly', embedId: "oHFkF4ZQp_4", title: "How To Teach Your Bird To Fly", description: 'Teach your bird how to fly on command.'}
-    }
-}
+
+  const tricks = tricksData
   //Return app Router Navigation
   return (
     <div className="App">
