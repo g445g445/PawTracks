@@ -5,6 +5,7 @@ import * as cocossd from "@tensorflow-models/coco-ssd";
 import { loadGraphModel } from '@tensorflow/tfjs';
 import { Menu, MenuButton, MenuItem, View } from '@aws-amplify/ui-react';
 import { AiOutlineDownCircle } from 'react-icons/ai';
+import { Storage } from 'aws-amplify';
 
 function Test() {
     const canvasRef = useRef(null);
@@ -50,10 +51,14 @@ function Test() {
     };
     */
 
-    async function prepare_video() {
+    async function prepare_video(videoKey) {
         try {
             const net = await cocossd.load();
             netRef.current = net;
+            console.log(videoKey);
+            const videoUrl = await Storage.get(videoKey, { level: 'public' });
+            setVideoSrc(videoUrl);
+            console.log(videoUrl);
             setInterval(() => {
                 liveDetections(net);
             },);
@@ -67,19 +72,22 @@ function Test() {
         canvasRef.current.width = width;
         canvasRef.current.height = height;
         // Detects objects in our videoElement using our model
-        const detections = await netRef.current.detect(document.getElementById('video')); //Should have minScore
+        try {
+            const detections = await netRef.current.detect(document.getElementById('video'));
+            detectionsRef.current = detections;
+            console.debug(detections);
+            const canvas = canvasRef.current.getContext("2d");
+            // Calls the bbox drawing function, passing in our detections and canvas obj
+            drawBbox(detections, canvas);
+        } catch (error) {
+            console.error(error);
+        }
+        //Should have minScore
         /*let filteredDetections = detections.filter(prediction => {
             return categories.includes(prediction.class);
         });
         detectionsRef.current = filteredDetections;*/
-        detectionsRef.current = detections;
-        console.debug(detections);
-
         // Draws the canvas
-        const canvas = canvasRef.current.getContext("2d");
-
-        // Calls the bbox drawing function, passing in our detections and canvas obj
-        drawBbox(detections, canvas);
     }
 
     function drawBbox(detections, canvas) {
@@ -89,7 +97,6 @@ function Test() {
             var confidence = parseFloat(prediction['score'].toFixed(2));
 
             // Which objects to detect
-            
                 if (text === 'person') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#F7F9FB';
@@ -153,7 +160,6 @@ function Test() {
                 >
                     <MenuItem onClick={() => {
                         console.log('Test Video 1: Person');
-                        setVideoSrc("/test-videos/temp-person.mp4");
                         let videoElement = document.getElementById('video');
                         try {
                             videoElement.addEventListener('loadedmetadata', function (e) {
@@ -163,13 +169,14 @@ function Test() {
                         } catch (error) {
                             console.error(error);
                         }
-                        prepare_video();
+                        //setVideoSrc('temp-person.mp4');
+                        prepare_video('temp-person.mp4');
                     }}>
                     Video One: Person
                     </MenuItem>
                     <MenuItem onClick={() => {
                         console.log('Dog On Bed');
-                        setVideoSrc("/test-videos/koda-test-video.webm");
+                        //setVideoSrc('koda-test-video.webm');
                         let videoElement = document.getElementById('video');
                         try {
                             videoElement.addEventListener('loadedmetadata', function (e) {
@@ -179,14 +186,14 @@ function Test() {
                         } catch (error) {
                             console.error(error);
                         }
-                        prepare_video();
+                        prepare_video('koda-test-video.webm');
                         //detectFrame();
                     }}>
                     Video Two: Dog On Bed
                     </MenuItem>
                     <MenuItem onClick={() => {
                         console.log('Cat On Chair');
-                        setVideoSrc("/test-videos/cat-on-chair.mp4");
+                        //setVideoSrc('cat-on-chair.mp4');
                         let videoElement = document.getElementById('video');
                         try {
                             videoElement.addEventListener('loadedmetadata', function (e) {
@@ -196,7 +203,7 @@ function Test() {
                         } catch (error) {
                             console.error(error);
                         }
-                        prepare_video();
+                        prepare_video('cat-on-chair.mp4');
                     }}>
                     Video Three: Cat On Chair
                     </MenuItem>
@@ -204,11 +211,10 @@ function Test() {
                 {/*<input ref={inputRef} className="videoInput_input" type="file" onInput={handleFileChange} accept=".mov,.mp4" />*/}
                 <div id="videoContainer">
                     <canvas className="video=prop" id="video-canvas" ref={canvasRef} />
-                    <video id="video" autoPlay loop muted src={videoSrc}></video>
+                    <video id="video" autoPlay loop muted src={videoSrc} crossOrigin="anonymous"></video>
                 </div>
             </div>
         </>
     )
 }
-
 export default Test
