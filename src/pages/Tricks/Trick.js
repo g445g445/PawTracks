@@ -5,7 +5,7 @@ import './Trick.css';
 
 function Trick(props) {
     const {trick} = useParams();
-    var embedId, bodyText, headerText;
+    var embedId, bodyText, headerText, titleText;
 
 
     let tricks = props.tricks;
@@ -15,7 +15,8 @@ function Trick(props) {
             if(y === trick) {
                 embedId = tricks[x][y]["embedId"];
                 bodyText = tricks[x][y]["body"];
-                headerText = tricks[x][y]["description"]
+                headerText = tricks[x][y]["description"];
+                titleText = tricks[x][y]["title"];
             }
         }
     }
@@ -37,7 +38,7 @@ function Trick(props) {
 
     return (
         <>
-            <h1>{trick}</h1>
+            <h1>{titleText}</h1>
             <div className="video-container" style={{ height: containerHeight }}>
                 <YoutubeEmbed embedId={embedId}/>
             </div>

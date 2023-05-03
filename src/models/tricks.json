@@ -4,18 +4,21 @@
             "name": "Sit",
             "embedId": "EDgi2sLlWAU",
             "description": "Teach your dog how to sit on command.",
+            "title": "How To Teach Your Dog To Sit",
             "body": "Teaching your dog to sit is a fundamental command in dog training. It is a great way to get your dog to focus and become more obedient. To train your dog to sit, start by getting their attention with a treat or toy. Hold the treat or toy above their head and slowly move it back over their ears. As they follow the treat with their head, their butt will naturally lower to the ground. As soon as their butt touches the ground, say 'sit' and give them the treat or toy. Repeat this process several times a day until your dog can sit on command. Once your dog has mastered the sit command, you can use it to teach them other commands, such as 'stay' and 'come'. The sit command is also useful for controlling your dog in situations where they might get overexcited, such as when greeting people or other dogs."
         },
         "Shake": {
             "name": "Shake",
             "embedId": "G3-hec29wII",
             "description": "Teach your dog how to shake on command.",
+            "title": "How To Teach Your Dog To Shake",
             "body": "Teaching your dog to shake is a fun trick that can impress your friends and family. It is also a great way to bond with your dog. To train your dog to shake, start by getting them to sit. Then, hold out your hand with your palm facing up and say 'shake'. Gently tap your dog's paw until they lift it off the ground and put it in your hand. As soon as they do, say 'good boy/girl' and give them a treat. Repeat this process several times a day until your dog can shake on command. Once your dog has mastered the shake command, you can use it to teach them other commands, such as 'high five' and 'wave'. The shake command is also useful for getting your dog to greet people in a polite and friendly manner."
         },
         "Lay": {
             "name": "Lay",
             "embedId": "hHKtUp9-xbc",
             "description": "Teach your dog how to lay on command.",
+            "title": "How To Teach Your Dog To Lay",
             "body": "Teaching your dog to lay down is a useful command that can help your dog relax and calm down. To train your dog to lay down, start by getting them to sit. Then, hold a treat or toy in front of their nose and slowly lower it to the ground. As your dog follows the treat with their nose, their body will naturally lower to the ground. Once their body is fully on the ground, say 'lay' and give them the treat or toy. Repeat this process several times a day until your dog can lay down on command. Once your dog has mastered the lay command, you can use it to teach them other commands, such as 'roll over' and 'crawl'. The lay command is also useful for getting your dog to calm down in situations where they might be feeling anxious or overexcited."
         }
     },
@@ -24,18 +27,21 @@
             "name": "Come",
             "embedId": "OFjlF7zQF_g",
             "description": "Teach your cat how to come on command.",
+            "title": "How To Teach Your Cat To Come",
             "body": "Teaching your cat to come when called is a useful command that can help keep your cat safe and out of harm's way. To train your cat to come, start by getting their attention with a treat or toy. Say their name in a clear, upbeat tone and call them to you. When they come to you, say 'good boy/girl' and give them the treat or toy. Repeat this process several times a day until your cat can come on command. Once your cat has mastered the come command, you can use it to get them to come inside from the backyard or to come to you when it's time for a vet visit. The come command is also useful for training your cat to walk on a leash or harness."
         },
         "HighFive": {
             "name": "High Five",
             "embedId": "4NWS0mtjMuw",
             "description": "Teach your cat how to high five on command.",
+            "title": "How To Teach Your Cat To Give You A High Five",
             "body": "Teaching your cat to high five is a fun trick that can impress your friends and family. It is also a great way to bond with your cat. To train your cat to high five, start by getting them to sit. Then, hold out your hand and say 'high five'. Gently tap your cat's paw until they lift it off the ground and touch it to your hand. As soon as they do, say 'good boy/girl' and give them a treat. Repeat this process several times a day until your cat can high five on command. Once your cat has mastered the high five command, you can use it to teach them other tricks, such as 'shake' and 'wave'. The high five command is also useful for getting your cat to greet people in a friendly and playful manner."
         },
         "Stay": {
             "name": "Stay",
             "embedId": "WLetRnjCEtU",
             "description": "Teach your cat how to stay on command.",
+            "title": "How To Teach Your Cat To Stay",
             "body": "Teaching your cat to stay is a useful command that can help keep your cat out of trouble and prevent them from getting into things they shouldn't. To train your cat to stay, start by getting them to sit. Then, hold out your hand in front of them and say 'stay'. Step back a few feet and wait for a few seconds. If your cat stays in place, say 'good boy/girl' and give them a treat. If your cat moves, say 'no' and start again. Repeat this process several times a day until your cat can stay in place for longer periods of time. Once your cat has mastered the stay command, you can use it to teach them other commands, such as 'come' and 'sit'. The stay command is also useful for keeping your cat in place when you need to do something, such as cleaning their litter box or giving them medication."
         }
     },
@@ -44,18 +50,21 @@
             "name": "Talk",
             "embedId": "PiPk8GS8UqM",
             "description": "Teach your bird how to talk on command.",
+            "title": "How To Teach Your Bird To Talk",
             "body": "Teaching your bird to talk is a fun and rewarding experience. It can also help your bird feel more comfortable and happy in their environment. To train your bird to talk, start by choosing a simple phrase or word, such as 'hello' or 'good bird'. Repeat the phrase to your bird several times a day, and reward them with a treat or praise when they repeat it back to you. Be patient, as it may take several weeks or even months for your bird to start talking. Once your bird has mastered the first word or phrase, you can teach them more complex phrases and even songs. Talking can also help your bird communicate with you more effectively, such as when they are hungry or want attention."
         },
         "PlayDead": {
             "name": "Play Dead",
             "embedId": "RZ4dJ7nV1wI",
             "description": "Teach your bird how to play dead on command.",
+            "title": "How To Teach Your Bird To Play Dead",
             "body": "Teaching your bird to play dead is a fun trick that can impress your friends and family. It is also a great way to bond with your bird. To train your bird to play dead, start by getting them to lay on their back in your hand or on a flat surface. Say 'play dead' and gently stroke their belly until they stay still. As soon as they do, say 'good bird' and give them a treat. Repeat this process several times a day until your bird can play dead on command. Once your bird has mastered the play dead command, you can use it to teach them other tricks, such as 'roll over' and 'wave'. The play dead command is also useful for getting your bird to relax and calm down when they are feeling stressed or anxious."
         },
         "Fly": {
             "name": "Fly",
             "embedId": "oHFkF4ZQp_4",
             "description": "Teach your bird how to fly on command.",
+            "title": "How To Teach Your Bird To Fly",
             "body": "Teaching your bird to fly on command can be a fun and rewarding experience, but it requires a lot of training and patience. Before you begin training, make sure your bird has plenty of room to fly safely and that there are no obstacles in the way. To train your bird to fly, start by getting them to fly short distances to your hand or to a perch. Gradually increase the distance they need to fly, and reward them with a treat or praise when they do. Be patient, as it may take several weeks or even months for your bird to fly long distances on command. Once your bird has mastered the fly command, you can use it to teach them other tricks, such as flying through hoops or flying to a specific location. The fly command is also useful for getting your bird to exercise and stay healthy." 
         }
     }
