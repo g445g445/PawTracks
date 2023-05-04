@@ -127,16 +127,16 @@ function Home() {
             personFound = personInRoom(detectionsRef.current);
         }
         
-        let petOnBedDetection = false;
-        petOnBedDetection = petOnBed(detectionsRef.current);
+        let petOnObjectDetection = false;
+        petOnObjectDetection = petOnObject(detectionsRef.current);
 
-        if (personFound || petOnBedDetection) {
+        if (personFound || petOnObjectDetection) {
             // Add Alert Types Here
             if (personFound) {
                 incidentType = "Person";
                 //console.log("Alert Type: Person");
             }
-            if (petOnBedDetection) {
+            if (petOnObjectDetection) {
                 incidentType = "PetOnObject";
                 //console.log("Alert Type: Pet on Bed");
             }
@@ -163,25 +163,25 @@ function Home() {
         });
     }
 
-    function petOnBed(detections) {
+    function petOnObject(detections) {
         var petBox = null;
-        var bedBox = null;
+        var objectBox = null;
         var typeOfPet = null;
         detections.forEach(prediction => {
             if (prediction['class'] === 'dog' || prediction['class'] === 'cat' || prediction['class'] === 'bird') {
                 petBox = prediction['bbox']
                 typeOfPet = prediction['class']
             }
-            if (prediction['class'] === 'bed') {
-                bedBox = prediction['bbox']
+            if (prediction['class'] === 'bed' || prediction['class'] === 'chair' prediction['class'] === 'couch') {
+                objectBox = prediction['bbox']
             }
         })
 
-        if ((!(petBox === "undefined" || petBox === null)) && (!(bedBox === "undefined" || bedBox === null))) {
-            if (bedBox[0] < petBox[0] && bedBox[1] < petBox[1]) {
-                if (((petBox[0] + petBox[2]) < (bedBox[0] + bedBox[2]))
-                    && ((petBox[1] + petBox[3]) < (bedBox[1] + bedBox[3]))) {
-                    alert("A " + typeOfPet + "IS ON THE BED!!!!");
+        if ((!(petBox === "undefined" || petBox === null)) && (!(objectBox === "undefined" || objectBox === null))) {
+            if (objectBox[0] < petBox[0] && objectBox[1] < petBox[1]) {
+                if (((petBox[0] + petBox[2]) < (objectBox[0] + objectBox[2]))
+                    && ((petBox[1] + petBox[3]) < (objectBox[1] + objectBox[3]))) {
+                    console.log("A " + typeOfPet + "IS ON THE FURNITURE!!!!");
                     return true;
                 }
             }
@@ -293,21 +293,17 @@ function Home() {
                     var color = '#F7F9FB';
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                if (prediction['class'] === 'bed') {
+                if (prediction['class'] === 'bed' || prediction['class'] === 'chair' prediction['class'] === 'couch') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#31708E'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                if (prediction['class'] === 'dog') {
+                if (prediction['class'] === 'dog' || prediction['class'] === 'cat' || prediction['class'] === 'bird') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#687864'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                if (prediction['class'] === 'bowl') {
-                    text = text[0].toUpperCase() + text.slice(1).toLowerCase()
-                    var color = 'green'
-                    setStyle(text, x, y, width, height, color, canvas, confidence);
-                }
+                
             }
         })
     };
