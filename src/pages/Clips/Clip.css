@@ -1,13 +1,12 @@
-.video-container {
+.video-clip-container {
     position: relative;
     width: 100%;
     height: 0;
     padding-bottom: 56.25%;
     /* 16:9 aspect ratio */
-    transform: translateX(-10%);
 }
 
-.video-container video {
+.video-clip-container video {
     position: absolute;
     top: 0;
     left: 0;

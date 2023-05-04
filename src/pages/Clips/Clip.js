@@ -18,7 +18,7 @@ function Clip() {
     return (
         <>
             <h1>Single Clip Page: {id}</h1>
-            <div className="video-container">
+            <div className="video-clip-container">
                 <video controls src={videoUrl}></video>
             </div>
         </>
