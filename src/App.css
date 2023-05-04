@@ -95,6 +95,12 @@
   .bigPawTrack {
     width: 100%;
   }
+  
+  @media only screen and (max-width: 768px) {
+    .mainContent {
+      height: calc(100vh - 300px);
+    }
+  }
 
   .mainContent{
     width: 90%;
