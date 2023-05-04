@@ -172,7 +172,7 @@ function Home() {
                 petBox = prediction['bbox']
                 typeOfPet = prediction['class']
             }
-            if (prediction['class'] === 'bed' || prediction['class'] === 'chair' prediction['class'] === 'couch') {
+            if (prediction['class'] === 'bed' || prediction['class'] === 'chair' || prediction['class'] === 'couch') {
                 objectBox = prediction['bbox']
             }
         })
@@ -293,7 +293,7 @@ function Home() {
                     var color = '#F7F9FB';
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                if (prediction['class'] === 'bed' || prediction['class'] === 'chair' prediction['class'] === 'couch') {
+                if (prediction['class'] === 'bed' || prediction['class'] === 'chair' || prediction['class'] === 'couch') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#31708E'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
