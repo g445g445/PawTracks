@@ -66,7 +66,7 @@ function Clips() {
             <h1> All Clips </h1>
             <br />
             <div className="cards">
-                <Expander type='single' isCollapsible={true}>
+                <Expander type='single' isCollapsible={true}> 
                     {clip.map((session) => (
                         <Expander type='multiple' isCollapsible={true} key={session.id}>
                             {console.log('SESSION ID: ' + session.id)}
