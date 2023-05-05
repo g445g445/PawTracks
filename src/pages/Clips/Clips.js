@@ -17,7 +17,8 @@ function Clips() {
         const getDate = async () => {
             await DataStore.clear();
             subscription = DataStore.observeQuery(Session).subscribe(({ items }) => {
-                setClip(items);
+                const sortedItems = items.sort((b, a) => new Date(a.createdAt) - new Date(b.createdAt));
+                setClip(sortedItems);
                 setIsLoading(false);
             });
         };
