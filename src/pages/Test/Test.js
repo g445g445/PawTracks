@@ -47,6 +47,8 @@ function Test() {
     //stores clip name for setting json data
     const currentClipTitleRef = useRef("");
 
+    
+
     function resetClips() {
         //console.log("DateStore"+Object.isFrozen(clips.Clips.length - 1))  //used to find what was freezing data object
         clips = { Clips: [] };
@@ -89,6 +91,7 @@ function Test() {
 
     async function prepare_video(videoKey) {
         try {
+            homeButtonElement.current.removeAttribute("hidden");
             const net = await cocossd.load();
             netRef.current = net;
             console.log(videoKey);
@@ -453,7 +456,7 @@ function Test() {
                     homeButtonElement.current.setAttribute("hidden", true);
                     awayButtonElement.current.removeAttribute("hidden");
                     detectFrame();
-                }} ref={homeButtonElement}><AiOutlineHome /> Home</button>
+                }} ref={homeButtonElement} hidden><AiOutlineHome /> Home</button>
                 <button id='away-btn' onClick={() => {
                     sessionEndTime = new Date();
                     console.log("SESSION END: " + sessionEndTime.toLocaleString());
@@ -463,7 +466,7 @@ function Test() {
                     stopRecording();
                     //console.log("Clips" + clips);
                     handleSessionEnd();
-                }} ref={awayButtonElement}><BiCar /> Away</button>
+                }} ref={awayButtonElement} hidden><BiCar /> Away</button>
             </div>
             {/* Temporary Clips Storage */}
             <div id="Recording">
