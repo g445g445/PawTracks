@@ -13,6 +13,8 @@ import VideoUploadExtended from '../../controllers/VideoUploadExtended';
 import { SaveSession } from '../../controllers/SaveSession';
 import { playAudioOnEvent } from '../../controllers/AudioPlayerV2';
 //import useAudioPlayer from '../../controllers/AudioPlayer';
+import { DataStore } from '@aws-amplify/datastore';
+import { UserSettings } from '../../models';
 
 
 // Global vars for percitent data
@@ -22,10 +24,6 @@ var sessionEndTime = null;
 
 var incidentList = [];
 var incidentType = "";
-
-var confidenceMin = 0.4;
-var personDetection = true;
-var recordClips = true;
 
 function Home() {
     // Reference Variable for the Detection Canvas
@@ -54,6 +52,46 @@ function Home() {
 
     var cameraSelect = "user";
 
+    const [confidenceMin, setConfidenceMin] = useState(0.4);
+    const [personDetection, setPersonDetection] = useState(true);
+    const [recordClips, setRecordClips] = useState(true);
+   // const [isLoading, setLoading] = useState(true);
+    const [selectedCamera, setSelectedCamera] = useState('user');
+
+    useEffect(() => {
+        async function fetchUserSettings() {
+            console.log("Fetching user settings");
+            try {
+                const existingUserSettings = await DataStore.query(UserSettings);
+                console.log(existingUserSettings.settings);
+                if (existingUserSettings.length > 0) {
+                    const jsonData = existingUserSettings[0].settings;
+                    // Update global vars with fetched data
+                    setConfidenceMin(jsonData.minimumConfidence);
+                    setPersonDetection(jsonData.personDetection);
+                    setRecordClips(jsonData.recordClips);
+                    console.log(`user settings updated Conf: ${jsonData.minimumConfidence} person: ${jsonData.personDetection} record: ${jsonData.recordClips}`);
+                    //console.log(`user settings are Conf: ${confidenceMin} person: ${personDetection} record: ${recordClips}`  );
+                }
+                else {
+                    setConfidenceMin(0.4);
+                    setPersonDetection(true);
+                    setRecordClips(true);
+                    console.log("no user settings");
+                }
+            } catch (error) {
+                console.error('Failed to fetch user settings:', error);
+            }
+        }
+        async function getReady() {
+            await fetchUserSettings();
+            prepare_stream(selectedCamera)
+        }
+        
+        getReady();
+        console.log(`user settings are Conf: ${confidenceMin} person: ${personDetection} record: ${recordClips}`);
+    }, []);
+
     function resetClips() {
         //console.log("DateStore"+Object.isFrozen(clips.Clips.length - 1))  //used to find what was freezing data object
         clips = { Clips: [] };
@@ -63,6 +101,7 @@ function Home() {
     }
 
     async function prepare_stream(cameraSelect) {
+        console.log("user settings fetched");
         // By default the away button is hidden
         awayButtonElement.current.setAttribute("hidden", true);
         if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -126,17 +165,17 @@ function Home() {
         if (personDetection) {
             personFound = personInRoom(detectionsRef.current);
         }
-        
-        let petOnObjectDetection = false;
-        petOnObjectDetection = petOnObject(detectionsRef.current);
 
-        if (personFound || petOnObjectDetection) {
+        let petOnBedDetection = false;
+        petOnBedDetection = petOnBed(detectionsRef.current);
+
+        if (personFound || petOnBedDetection) {
             // Add Alert Types Here
             if (personFound) {
                 incidentType = "Person";
                 //console.log("Alert Type: Person");
             }
-            if (petOnObjectDetection) {
+            if (petOnBedDetection) {
                 incidentType = "PetOnObject";
                 //console.log("Alert Type: Pet on Bed");
             }
@@ -146,7 +185,7 @@ function Home() {
             }
             lastDetectionsRef.current.push(true);
         } else if (lastDetectionsRef.current.filter(Boolean).length) {
-            if(recordClips) {
+            if (recordClips) {
                 startRecording();
                 lastDetectionsRef.current.push(false);
             }
@@ -163,25 +202,25 @@ function Home() {
         });
     }
 
-    function petOnObject(detections) {
+    function petOnBed(detections) {
         var petBox = null;
-        var objectBox = null;
+        var bedBox = null;
         var typeOfPet = null;
         detections.forEach(prediction => {
             if (prediction['class'] === 'dog' || prediction['class'] === 'cat' || prediction['class'] === 'bird') {
                 petBox = prediction['bbox']
                 typeOfPet = prediction['class']
             }
-            if (prediction['class'] === 'bed' || prediction['class'] === 'chair' || prediction['class'] === 'couch') {
-                objectBox = prediction['bbox']
+            if (prediction['class'] === 'bed') {
+                bedBox = prediction['bbox']
             }
         })
 
-        if ((!(petBox === "undefined" || petBox === null)) && (!(objectBox === "undefined" || objectBox === null))) {
-            if (objectBox[0] < petBox[0] && objectBox[1] < petBox[1]) {
-                if (((petBox[0] + petBox[2]) < (objectBox[0] + objectBox[2]))
-                    && ((petBox[1] + petBox[3]) < (objectBox[1] + objectBox[3]))) {
-                    console.log("A " + typeOfPet + "IS ON THE FURNITURE!!!!");
+        if ((!(petBox === "undefined" || petBox === null)) && (!(bedBox === "undefined" || bedBox === null))) {
+            if (bedBox[0] < petBox[0] && bedBox[1] < petBox[1]) {
+                if (((petBox[0] + petBox[2]) < (bedBox[0] + bedBox[2]))
+                    && ((petBox[1] + petBox[3]) < (bedBox[1] + bedBox[3]))) {
+                    alert("A " + typeOfPet + "IS ON THE BED!!!!");
                     return true;
                 }
             }
@@ -222,7 +261,7 @@ function Home() {
         clips.Clips.push({
             "start": clipStartTime,
             "end": "temp",
-            "IncidentList":[],
+            "IncidentList": [],
             "fileName": `temp.mp4`
         });
 
@@ -274,7 +313,7 @@ function Home() {
         if (currentClipTitle != "" && currentClipTitle != null) clips.Clips[clips.Clips.length - 1].fileName = `${currentClipTitle}.mp4`;
         clips.Clips[clips.Clips.length - 1].end = new Date();
         clips.Clips[clips.Clips.length - 1].IncidentList = incidentList;
-        
+
         // temp code for testing purposes
         //console.log(clips)
         lastDetectionsRef.current = [];
@@ -293,17 +332,21 @@ function Home() {
                     var color = '#F7F9FB';
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                if (prediction['class'] === 'bed' || prediction['class'] === 'chair' || prediction['class'] === 'couch') {
+                if (prediction['class'] === 'bed') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#31708E'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                if (prediction['class'] === 'dog' || prediction['class'] === 'cat' || prediction['class'] === 'bird') {
+                if (prediction['class'] === 'dog') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#687864'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                
+                if (prediction['class'] === 'bowl') {
+                    text = text[0].toUpperCase() + text.slice(1).toLowerCase()
+                    var color = 'green'
+                    setStyle(text, x, y, width, height, color, canvas, confidence);
+                }
             }
         })
     };
@@ -320,7 +363,6 @@ function Home() {
         canvas.stroke()
     };
 
-    useEffect(() => { prepare_stream(cameraSelect) }, [])
 
     async function handleSessionEnd() {
         // Save session to datastore
@@ -331,53 +373,59 @@ function Home() {
         resetClips();
     }
 
+    // if (loading) {
+    //     return <div>Loading user settings...</div>;
+    //   }
+
     return (
         <>
-            {/* Webcam Fotoage */}
-            <div id="home-container">
-                <canvas className='video-prop' id="video-canvas" ref={canvasRef} />
-                <video className='video-prop' id="webcam" autoPlay playsInline muted ref={videoElement} />
-                <button id='home-btn' onClick={() => {
-                    sessionStartTime = new Date();
-                    console.log("SESSION Start: " + sessionStartTime);
-                    shouldRecordRef.current = true;
-                    homeButtonElement.current.setAttribute("hidden", true);
-                    awayButtonElement.current.removeAttribute("hidden");
-                    detectFrame();
-                }} ref={homeButtonElement}><AiOutlineHome /> Home</button>
-                <button id='away-btn' onClick={() => {
-                    sessionEndTime = new Date();
-                    console.log("SESSION END: " + sessionEndTime.toLocaleString());
-                    shouldRecordRef.current = false;
-                    awayButtonElement.current.setAttribute("hidden", true);
-                    homeButtonElement.current.removeAttribute("hidden");
-                    stopRecording();
-                    //console.log("Clips" + clips);
-                    handleSessionEnd();
-                }} ref={awayButtonElement}><BiCar /> Away</button>
-                <button id="swap-cam" onClick={() => {
-                    if (cameraSelect === "user") {
-                        cameraSelect = "environment";
-                    }
-                    else if (cameraSelect === "environment") {
-                        cameraSelect = "user";
-                    }
-                    prepare_stream(cameraSelect)
-                }}><IoCameraReverse /></button>
-            </div>
-            {/* Temporary Clips Storage */}
-            <div id="Recording">
-                {!records.length
-                    ? null
-                    : records.map(record => {
-                        return (
-                            <div key={record.title}>
-                                <VideoUploadExtended href={record.href} uid={record.title} />
-                            </div>
-                        );
-                    })}
-            </div>
+                <div id="home-container">
+                    {/* Webcam Fotoage */}
+                    <div id="home-container">
+                        <canvas className='video-prop' id="video-canvas" ref={canvasRef} />
+                        <video className='video-prop' id="webcam" autoPlay playsInline muted ref={videoElement} />
+                        <button id='home-btn' onClick={() => {
+                            sessionStartTime = new Date();
+                            console.log("SESSION Start: " + sessionStartTime);
+                            shouldRecordRef.current = true;
+                            homeButtonElement.current.setAttribute("hidden", true);
+                            awayButtonElement.current.removeAttribute("hidden");
+                            detectFrame();
+                        }} ref={homeButtonElement}><AiOutlineHome /> Home</button>
+                        <button id='away-btn' onClick={() => {
+                            sessionEndTime = new Date();
+                            console.log("SESSION END: " + sessionEndTime.toLocaleString());
+                            shouldRecordRef.current = false;
+                            awayButtonElement.current.setAttribute("hidden", true);
+                            homeButtonElement.current.removeAttribute("hidden");
+                            stopRecording();
+                            //console.log("Clips" + clips);
+                            handleSessionEnd();
+                        }} ref={awayButtonElement}><BiCar /> Away</button>
+                        <button id="swap-cam" onClick={() => {
+                            if (cameraSelect === "user") {
+                                cameraSelect = "environment";
+                            }
+                            else if (cameraSelect === "environment") {
+                                cameraSelect = "user";
+                            }
+                           prepare_stream(cameraSelect)  //TODO: DONT FORGET ME
+                        }}><IoCameraReverse /></button>
+                    </div>
+                    {/* Temporary Clips Storage */}
+                    <div id="Recording">
+                        {!records.length
+                            ? null
+                            : records.map(record => {
+                                return (
+                                    <div key={record.title}>
+                                        <VideoUploadExtended href={record.href} uid={record.title} />
+                                    </div>
+                                );
+                            })}
+                    </div>
+                </div>
         </>
-    )
-}
+    );
+};
 export default Home

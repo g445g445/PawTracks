@@ -1,4 +1,4 @@
-import { React, useState, useRef } from 'react';
+import { React, useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import './Profile.css';
 import { SliderField, SwitchField } from '@aws-amplify/ui-react';
@@ -8,6 +8,8 @@ import AudioPlayer from '../../controllers/AudioPlayer';
 import { ConsoleLogger } from '@aws-amplify/core';
 import { mul } from '@tensorflow/tfjs';
 import saveSettings from '../../controllers/SaveSettings';
+import { DataStore } from '@aws-amplify/datastore';
+import { UserSettings } from '../../models'; // replace with your own model import
 
 function Profile() {
     // Default Settings
@@ -16,29 +18,9 @@ function Profile() {
             "recordClips": true,
             "minimumConfidence": 0,
             "personDetection": true,
-            "restrictedAreas": [] }
-        );
-    
-   /*
-    const settings = useRef({
-        "name": "John Doe",
-        "email": "john.doe@example.com",
-        "password": "password123",
-        "recordClips": true,
-        "minimumConfidence": 0,
-        "personDetectiong": true,
-        "restrictedAreas": [
-            { "name": "Bed", "id": 0, "restrictedPets": [{ "name": "Dog", "id": 1 }, { "name": "Cat", "id": 2 }, { "name": "Bird", "id": 3 }] },
-            { "name": "Couch", "id": 1, "restrictedPets": [{ "name": "Dog", "id": 1 }, { "name": "Cat", "id": 2 }, { "name": "Bird", "id": 3 }] },
-            { "name": "Chair", "id": 2, "restrictedPets": [{ "name": "Dog", "id": 1 }, { "name": "Cat", "id": 2 }, { "name": "Bird", "id": 3 }] }
-        ]
-    });
-
-    console.log(JSON.stringify(settings.current['restrictedAreas'][0]['restrictedPets']));
-    */
-    
-    
-
+            "restrictedAreas": []
+        }
+    );
 
     const [isRecordClipsChecked, setIsRecordClipsChecked] = useState(true);
     const [isPersonDetectionChecked, setIsPersonDetectionChecked] = useState(true);
@@ -51,7 +33,32 @@ function Profile() {
 
     var restrictedPetOptions = [{ name: 'Dog', id: 1 }, { name: 'Cat', id: 2 }, { name: 'Bird', id: 3 },];
 
-
+    useEffect(() => {
+        async function fetchSettings() {
+            try {
+                const existingUserSettings = await DataStore.query(UserSettings);
+                console.log(existingUserSettings.settings);
+                if (existingUserSettings.length > 0) {
+                    const jsonData = existingUserSettings[0].settings;
+                    // Update global vars with fetched data
+                    setSliderValue(jsonData.minimumConfidence);
+                    setIsPersonDetectionChecked(jsonData.personDetection);
+                    setIsRecordClipsChecked(jsonData.recordClips);
+                    console.log(`user settings updated Conf: ${jsonData.minimumConfidence} person: ${jsonData.personDetection} record: ${jsonData.recordClips}`);
+                    //console.log(`user settings are Conf: ${confidenceMin} person: ${personDetection} record: ${recordClips}`  );
+                }
+                else {
+                    setSliderValue(0.4);
+                    setIsPersonDetectionChecked(true);
+                    setIsRecordClipsChecked(true);
+                    console.log("no user settings");
+                }
+            } catch (error) {
+                console.error('Failed to fetch user settings:', error);
+            }
+        };
+        fetchSettings();
+    },[]);
 
     /*
     "name": "John Doe",
@@ -127,11 +134,6 @@ function Profile() {
         console.log("MULTILIST----------" + JSON.stringify(multiList[0]['props']['children'][1]['props']['id']));
         console.log("SELECTED VALUES----------" + JSON.stringify(multiList[0]['props']['children'][1]['props']['selectedValues']));
     }
-    /*
-    console.log(selectedArea);
-        var result = settings.current['restrictedAreas'].find(item => item.name === 'Bed');
-        console.log("RESULTS: " + JSON.stringify(result));
-    */
 
     // PET FUNCTIONS
 
@@ -169,10 +171,12 @@ function Profile() {
     // Used to save the current json settings to the database -BP
     const handleSave = async () => {
         const jsonData = {
-            "name": "John Doe",
-            "email": "john.doe@example.com",
-            "age": 19
-        };
+            "recordClips": isRecordClipsChecked,
+            "minimumConfidence": sliderValue,
+            "personDetection": isPersonDetectionChecked,
+            "restrictedAreas": []
+        }
+
         await saveSettings(jsonData);
     };
 
