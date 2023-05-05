@@ -6,6 +6,8 @@ An online petsitter powered by TensorFlow allowing users to monitor their pet th
 
 Vist use at https://www.pawtracks.live/
 
+For help using the service, check the user guide at the root of this repo
+
 ## Features
 
 - Automated clip recording and storage
