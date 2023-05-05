@@ -1,6 +1,7 @@
 import React from 'react';
 import './Audio.css';
 import { Storage } from "@aws-amplify/storage";
+import { Auth } from 'aws-amplify';
 
 const MicRecorder = require('mic-recorder-to-mp3');
 const mp3Recorder = new MicRecorder({bitRate: 128});
@@ -40,8 +41,12 @@ export function stopRecording()
         type: blob.type,
         lastModified: Date.now()
       });
-      
-      Storage.put("audio.mp3", file, {
+      const userId = Auth.currentUserInfo().then((info) => {
+        return info.id;
+    }).catch((error) => {
+        console.log('Error getting user ID:', error);
+    });
+      Storage.put(`${userId}.mp3`, file, {
         level: "private",
         contentType: file.type
     }).then(() => {

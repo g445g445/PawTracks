@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import { Storage } from "@aws-amplify/storage"
+import { Auth } from 'aws-amplify';
 
 //Call To Play Sounds
 const useAudioPlayer = (filename) => {
     const [audioUrl, setAudioUrl] = useState(null);
 
     const playAudio = async () => {
-        const downloadUrl = await Storage.get(filename, { level: "private"});
+        const userId = Auth.currentUserInfo().then((info) => {
+            return info.id;
+        }).catch((error) => {
+            console.log('Error getting user ID:', error);
+        });
+        const downloadUrl = await Storage.get(filename, { level: "private" });
         setAudioUrl(downloadUrl);
         const audio = new Audio(downloadUrl);
         audio.play();
@@ -16,7 +22,12 @@ const useAudioPlayer = (filename) => {
 };
 
 const AudioPlayer = () => {
-    const [playAudio, audioUrl] = useAudioPlayer("audio.mp3");
+    const userId = Auth.currentUserInfo().then((info) => {
+        return info.id;
+    }).catch((error) => {
+        console.log('Error getting user ID:', error);
+    });
+    const [playAudio, audioUrl] = useAudioPlayer(`${userId}.mp3`);
 
     return (
         <div>
@@ -24,7 +35,7 @@ const AudioPlayer = () => {
             {audioUrl && (
                 <div>
                     <audio>
-                        <source src={audioUrl} type="audio/mpeg"/>
+                        <source src={audioUrl} type="audio/mpeg" />
                     </audio>
                 </div>
             )}

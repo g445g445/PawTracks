@@ -24,14 +24,14 @@ function Navbar(props) {
                 <nav ref={navRef} className='mobileNavBar'>
 
                     <div className='mainWrapper' id="mainWrap">
-                    <NavLink to="/" style={({ isActive }) => isActive ? activeStyle : undefined } className='navItem'><a className='linkText'>Home</a></NavLink>
-                    <NavLink to="/pets" style={({ isActive }) => isActive ? activeStyle : undefined } className='navItem'><a className='linkText'>Pets</a></NavLink>
-                    <NavLink to="/clips" style={({ isActive }) => isActive ? activeStyle : undefined } className='navItem'><a className='linkText'>Clips</a></NavLink>
-                    <NavLink to="/tricks" style={({ isActive }) => isActive ? activeStyle : undefined } className='navItem'><a className='linkText'>Tricks</a></NavLink>
+                    <NavLink to="/" style={({ isActive }) => isActive ? activeStyle : undefined } className='navItem'><p className='linkText'>Home</p></NavLink>
+                    <NavLink to="/pets" style={({ isActive }) => isActive ? activeStyle : undefined } className='navItem'><p className='linkText'>Pets</p></NavLink>
+                    <NavLink to="/clips" style={({ isActive }) => isActive ? activeStyle : undefined } className='navItem'><p className='linkText'>Clips</p></NavLink>
+                    <NavLink to="/tricks" style={({ isActive }) => isActive ? activeStyle : undefined } className='navItem'><p className='linkText'>Tricks</p></NavLink>
                     </div>
                     
                     <div className='profileWrapper'>
-                    <NavLink to="/profile" style={({ isActive }) => isActive ? activeStyle : undefined } className='navItem' onClick={() => setOpen(!open)}><a className='linkText'><AiOutlineUser id="userImg"/> Hello, {props.firstName}</a></NavLink>
+                    <NavLink to="/profile" style={({ isActive }) => isActive ? activeStyle : undefined } className='navItem' onClick={() => setOpen(!open)}><p className='linkText'><AiOutlineUser id="userImg"/> Hello, {props.firstName}</p></NavLink>
                     <button className='signOut' onClick={props.signOut}> Sign Out</button>
                     </div>
 

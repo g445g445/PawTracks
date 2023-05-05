@@ -58,11 +58,12 @@ function Pets() {
   }, []) //  added ", []" which should make the call go only once
 
   useEffect(() => {
-    const getImageURL = async (id) => {
+    const getImageURL = async (id, type) => {
       const imageKey = `${id}.png`;
       try {
         const url = await Storage.get(`${id}.png`, { level: "private" });
         console.log(url);
+        console.log(type)
         setImageURLs((prevURLs) => ({
           ...prevURLs,
           [id]: url,
@@ -84,7 +85,7 @@ function Pets() {
     }
 
     // Fetch the image URLs for each pet
-    pets.forEach((item) => getImageURL(item.id));
+    pets.forEach((item) => getImageURL(item.id, item.type));
   }, [pets]);
 
 
@@ -121,7 +122,6 @@ function Pets() {
 
   return (
     <>
-
       <h1>Pets</h1>
       <br />
       <div className='addPet-container'>
@@ -160,7 +160,21 @@ function Pets() {
               <Divider />
               {imageURLs[item.id] && (
                 <div className="pet-image-container">
-                  <img src={imageURLs[item.id]} alt={item.name} className="pet-image" />
+                  <img src={imageURLs[item.id]} alt={item.name} className="pet-image" 
+                  onError={(e) => {
+                    if(item.type == 'DOG') {
+                      e.target.src = "/defaultDog.png";
+                    } else if(item.type == 'CAT') {
+                      e.target.src = "/defaultCat.png";
+                    } else if(item.type == 'BIRD') {
+                      e.target.src = "/defaultBird.png";
+                    } else {
+                      e.target.src = "/pawTracksCircleLogo512.png";
+                    }
+                    e.target.style.width = "95%"; // Set the width of the error image to 50%
+                    e.target.style.height = "auto"; //Auto scale with width
+                  }}
+                  />
                 </div>
               )}
               <div className='pet-info'>

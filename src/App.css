@@ -13,6 +13,7 @@
   --backgroundColor: #F7F9FB;
   --textColor: #000000;
 
+  /* Badge Styling */
   --petOnObjectBackgroundColor: #687864;
   --petOnObjectColor: #3f4a3d;
   --personBackgroundColor: #F7F9FB;
@@ -93,6 +94,12 @@
 @media only screen and (max-width: 1024px){
   .bigPawTrack {
     width: 100%;
+  }
+  
+  @media only screen and (max-width: 768px) {
+    .mainContent {
+      height: calc(100vh - 300px);
+    }
   }
 
   .mainContent{

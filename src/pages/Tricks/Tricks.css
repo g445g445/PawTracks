@@ -26,9 +26,9 @@
     align-content: space-around;
     padding-left: 15%;
     padding-right: 15%;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    margin-bottom: 125px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .cardLinks{
@@ -48,5 +48,5 @@
 }
 
 .trickDivider{
-    padding: 75px;
+    padding: 15px;
 }

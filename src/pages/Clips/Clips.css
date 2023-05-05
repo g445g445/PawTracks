@@ -1,11 +1,12 @@
-#personBadge{
-  color: var(--personBackgroundColor);
-  background-color: var(--personColor);
+
+#PersonBadge {
+  color: var(--personColor);
+  background-color: var(--personBackgroundColor);
   margin: 0 5px;
 }
 
-#petOnObjectBadge {
-  color: white;
+#PetOnObjectBadge {
+  color: var(--petOnObjectColor);
   background-color: var(--petOnObjectBackgroundColor);
   margin: 0 5px;
 }

@@ -46,10 +46,10 @@ function Tricks(props) {
 
     return (
         <>  
-                <h1>Tricks Page</h1>
+                <h1>Tricks</h1>
 
                 <div className='trickDivider'>
-                <h1 className='trickType'>Dog Tricks</h1>
+                <h1 className='trickType'>Dogs</h1>
                 <hr className='petDivider'/>
                 </div>
                 <div className='cards'>
@@ -57,7 +57,7 @@ function Tricks(props) {
                 </div>
 
                 <div className='trickDivider'>
-                <h1 className='trickType'>Cat Tricks</h1>
+                <h1 className='trickType'>Cats</h1>
                 <hr className='petDivider'/>
                 </div>
                 <div className='cards'>
@@ -65,7 +65,7 @@ function Tricks(props) {
                 </div>
 
                 <div className='trickDivider'>
-                <h1 className='trickType'>Bird Tricks</h1>
+                <h1 className='trickType'>Birds</h1>
                 <hr className='petDivider'/>
                 </div>
                 <div className='cards'>

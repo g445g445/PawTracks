@@ -77,7 +77,7 @@ function Pet(props) {
       {console.log("PET ID: " + petId)}
       <PhotoUpload id={petId}/>
       <br />
-      <PetUpdateForm pet={pet} onSubmit={handleUpdate} onCancel={onFormClose} onSuccess={onFormClose} padding={'0'} />
+      <PetUpdateForm pet={pet} onSubmit={handleUpdate} onCancel={onFormClose} onSuccess={onFormClose} className="form-container" padding={'0'} />
     </div>
   )
 }

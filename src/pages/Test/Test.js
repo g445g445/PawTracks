@@ -3,6 +3,9 @@ import React, { useRef, useEffect, useState } from 'react';
 
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import { loadGraphModel } from '@tensorflow/tfjs';
+import { Menu, MenuButton, MenuItem, View } from '@aws-amplify/ui-react';
+import { AiOutlineDownCircle } from 'react-icons/ai';
+import { Storage } from 'aws-amplify';
 
 function Test() {
     const canvasRef = useRef(null);
@@ -16,20 +19,21 @@ function Test() {
     const [videoSrc, setVideoSrc] = useState([]);
     const inputRef = useRef(null);
 
-    const filteredDetections = null;
+    
+    const settings = useRef({
+        "minimumConfidence": 0,
+        "personDetectiong": true,
+        "restrictedAreas": [
+            { "name": "Bed", "id": 0, "restrictedPets": [{ "name": "Dog", "id": 1 }, { "name": "Cat", "id": 2 }, { "name": "Bird", "id": 3 }] },
+            { "name": "Couch", "id": 1, "restrictedPets": [{ "name": "Dog", "id": 1 }, { "name": "Cat", "id": 2 }, { "name": "Bird", "id": 3 }] },
+            { "name": "Chair", "id": 2, "restrictedPets": [{ "name": "Dog", "id": 1 }, { "name": "Cat", "id": 2 }, { "name": "Bird", "id": 3 }] }
+        ]
+    });
 
-    var minConfidence = 0;
+    console.log(JSON.stringify(settings.current['restrictedAreas'][0]['restrictedPets']));
+    
 
-    let text = '{"categories": [' + 
-        '{"supercategory": "person", "id": 1, "name": "person"},' + 
-        '{"supercategory": "animal", "id": 2, "name": "dog"},' + 
-        '{"supercategory": "animal", "id": 3, "name": "cat"},' + 
-        '{"supercategory": "animal", "id": 4, "name": "bird"},' + 
-        '{"supercategory": "furniture", "id": 5, "name": "bed"},' + 
-        '{"supercategory": "furniture", "id": 6, "name": "couch"},' + 
-        '{"supercategory": "kitchen", "id": 7, "name": "bowl"} ]}';
-    const model = JSON.parse(text);
-
+    /*
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         let videoElement = document.getElementById('video');
@@ -44,14 +48,17 @@ function Test() {
 
         const url = URL.createObjectURL(file);
         setVideoSrc(url);
-
-        prepare_video();
     };
+    */
 
-    async function prepare_video() {
+    async function prepare_video(videoKey) {
         try {
             const net = await cocossd.load();
             netRef.current = net;
+            console.log(videoKey);
+            const videoUrl = await Storage.get(videoKey, { level: 'public' });
+            setVideoSrc(videoUrl);
+            console.log(videoUrl);
             setInterval(() => {
                 liveDetections(net);
             },);
@@ -65,19 +72,22 @@ function Test() {
         canvasRef.current.width = width;
         canvasRef.current.height = height;
         // Detects objects in our videoElement using our model
-        const detections = await netRef.current.detect(document.getElementById('video')); //Should have minScore
+        try {
+            const detections = await netRef.current.detect(document.getElementById('video'));
+            detectionsRef.current = detections;
+            console.debug(detections);
+            const canvas = canvasRef.current.getContext("2d");
+            // Calls the bbox drawing function, passing in our detections and canvas obj
+            drawBbox(detections, canvas);
+        } catch (error) {
+            console.error(error);
+        }
+        //Should have minScore
         /*let filteredDetections = detections.filter(prediction => {
             return categories.includes(prediction.class);
         });
         detectionsRef.current = filteredDetections;*/
-        detectionsRef.current = detections;
-        console.debug(detections);
-
         // Draws the canvas
-        const canvas = canvasRef.current.getContext("2d");
-
-        // Calls the bbox drawing function, passing in our detections and canvas obj
-        drawBbox(detections, canvas);
     }
 
     function drawBbox(detections, canvas) {
@@ -87,37 +97,48 @@ function Test() {
             var confidence = parseFloat(prediction['score'].toFixed(2));
 
             // Which objects to detect
-                if (text == 'person') {
+                if (text === 'person') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
-                    var color = '#F7F9FB'
+                    var color = '#F7F9FB';
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                else if (prediction['class'] == 'bed') {
+                if (prediction['class'] === 'bed') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#31708E'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                else if (prediction['class'] == 'dog') {
+                if (prediction['class'] === 'couch') {
+                    text = text[0].toUpperCase() + text.slice(1).toLowerCase()
+                    var color = '#31708E'
+                    setStyle(text, x, y, width, height, color, canvas, confidence);
+                }
+                if (prediction['class'] === 'chair') {
+                    text = text[0].toUpperCase() + text.slice(1).toLowerCase()
+                    var color = '#31708E'
+                    setStyle(text, x, y, width, height, color, canvas, confidence);
+                }
+                if (prediction['class'] === 'dog') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#687864'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                else if (prediction['class'] == 'cat') {
+                if (prediction['class'] === 'cat') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
-                    var color = 'pink'
-                    setStyle(text, x, y, width, height, color, canvas, confidence);
-                } else {
-                    text = text[0].toUpperCase() + text.slice(1).toLowerCase()
-                    var color = 'black'
+                    var color = '#687864'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-        })
+                if (prediction['class'] === 'bird') {
+                    text = text[0].toUpperCase() + text.slice(1).toLowerCase()
+                    var color = '#687864'
+                    setStyle(text, x, y, width, height, color, canvas, confidence);
+                }
+            })
     };
 
     function setStyle(text, x, y, width, height, color, canvas, confidence) {
         // Draw Rectangles and text
-        canvas.lineWidth = 5;
-        canvas.font = '18px Arial'
+        canvas.lineWidth = 10;
+        canvas.font = '30px Arial'
         canvas.fillStyle = color
         canvas.strokeStyle = color
         canvas.beginPath()
@@ -130,14 +151,70 @@ function Test() {
         <>
             <h1>Test Video Page: </h1>
             <div id="test-container">
-                <input ref={inputRef} className="videoInput_input" type="file" onInput={handleFileChange} accept=".mov,.mp4" />
+                <Menu menuAlign="start"
+                    trigger={
+                        <MenuButton variation="primary" size="small">
+                            Select A Testing Video <AiOutlineDownCircle id="dropdownArrow"></AiOutlineDownCircle>
+                        </MenuButton>
+                    }
+                >
+                    <MenuItem onClick={() => {
+                        console.log('Test Video 1: Person');
+                        let videoElement = document.getElementById('video');
+                        try {
+                            videoElement.addEventListener('loadedmetadata', function (e) {
+                                width = videoElement.videoWidth;
+                                height = videoElement.videoHeight;
+                            })
+                        } catch (error) {
+                            console.error(error);
+                        }
+                        //setVideoSrc('temp-person.mp4');
+                        prepare_video('temp-person.mp4');
+                    }}>
+                    Video One: Person
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                        console.log('Dog On Bed');
+                        //setVideoSrc('koda-test-video.webm');
+                        let videoElement = document.getElementById('video');
+                        try {
+                            videoElement.addEventListener('loadedmetadata', function (e) {
+                                width = videoElement.videoWidth;
+                                height = videoElement.videoHeight;
+                            })
+                        } catch (error) {
+                            console.error(error);
+                        }
+                        prepare_video('koda-test-video.webm');
+                        //detectFrame();
+                    }}>
+                    Video Two: Dog On Bed
+                    </MenuItem>
+                    <MenuItem onClick={() => {
+                        console.log('Cat On Chair');
+                        //setVideoSrc('cat-on-chair.mp4');
+                        let videoElement = document.getElementById('video');
+                        try {
+                            videoElement.addEventListener('loadedmetadata', function (e) {
+                                width = videoElement.videoWidth;
+                                height = videoElement.videoHeight;
+                            })
+                        } catch (error) {
+                            console.error(error);
+                        }
+                        prepare_video('cat-on-chair.mp4');
+                    }}>
+                    Video Three: Cat On Chair
+                    </MenuItem>
+                </Menu>
+                {/*<input ref={inputRef} className="videoInput_input" type="file" onInput={handleFileChange} accept=".mov,.mp4" />*/}
                 <div id="videoContainer">
                     <canvas className="video=prop" id="video-canvas" ref={canvasRef} />
-                    <video id="video" autoPlay loop muted src={videoSrc}></video>
+                    <video id="video" autoPlay loop muted src={videoSrc} crossOrigin="anonymous"></video>
                 </div>
             </div>
         </>
     )
 }
-
 export default Test

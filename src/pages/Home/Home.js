@@ -3,7 +3,7 @@ import './Home.css';
 import React, { useRef, useEffect, useState } from 'react';
 
 import * as cocossd from "@tensorflow-models/coco-ssd";
-
+import ReactDOM from "react-dom";
 import { AiOutlineHome } from 'react-icons/ai';
 import { BiCar } from 'react-icons/bi';
 import { IoCameraReverse } from 'react-icons/io5';
@@ -11,12 +11,21 @@ import { v4 as uuidv4 } from 'uuid';
 
 import VideoUploadExtended from '../../controllers/VideoUploadExtended';
 import { SaveSession } from '../../controllers/SaveSession';
+import { playAudioOnEvent } from '../../controllers/AudioPlayerV2';
+//import useAudioPlayer from '../../controllers/AudioPlayer';
 
 
 // Global vars for percitent data
 var clips = { Clips: [] };
 var sessionStartTime = null;
 var sessionEndTime = null;
+
+var incidentList = [];
+var incidentType = "";
+
+var confidenceMin = 0.4;
+var personDetection = true;
+var recordClips = true;
 
 function Home() {
     // Reference Variable for the Detection Canvas
@@ -43,27 +52,15 @@ function Home() {
     //stores clip name for setting json data
     const currentClipTitleRef = useRef("");
 
-
     var cameraSelect = "user";
-
-    let categories = [
-        { "supercategory": "person", "id": 1, "name": "person" },
-        { "supercategory": "animal", "id": 2, "name": "dog" },
-        { "supercategory": "animal", "id": 3, "name": "cat" },
-        { "supercategory": "animal", "id": 4, "name": "bird" },
-        { "supercategory": "furniture", "id": 5, "name": "bed" },
-        { "supercategory": "furniture", "id": 6, "name": "couch" },
-        { "supercategory": "kitchen", "id": 7, "name": "bowl" },
-    ];
 
     function resetClips() {
         //console.log("DateStore"+Object.isFrozen(clips.Clips.length - 1))  //used to find what was freezing data object
         clips = { Clips: [] };
         sessionStartTime = null;
         sessionEndTime = null;
+        incidentList = [];
     }
-
-
 
     async function prepare_stream(cameraSelect) {
         // By default the away button is hidden
@@ -109,7 +106,7 @@ function Home() {
             // Detects objects in our videoElement using our model
             const detections = await netRef.current.detect(videoElement.current);
             detectionsRef.current = detections;
-            console.debug(detections);
+            //console.debug(detections);
 
             // Draws the canvas
             const canvas = canvasRef.current.getContext("2d");
@@ -120,32 +117,39 @@ function Home() {
     }
 
     async function detectFrame() {
-        var IncidentType = []
         if (!shouldRecordRef.current) {
             stopRecording();
             return;
         }
 
         let personFound = false;
-        personFound = personInRoom(detectionsRef.current);
-        let petOnBedDetection = false;
-        petOnBedDetection = petOnBed(detectionsRef.current);
+        if (personDetection) {
+            personFound = personInRoom(detectionsRef.current);
+        }
+        
+        let petOnObjectDetection = false;
+        petOnObjectDetection = petOnObject(detectionsRef.current);
 
-        if (personFound || petOnBedDetection) {
+        if (personFound || petOnObjectDetection) {
             // Add Alert Types Here
             if (personFound) {
-                IncidentType.push(["Person"]);
-                console.log("Alert Type: Person");
+                incidentType = "Person";
+                //console.log("Alert Type: Person");
             }
-            if (petOnBedDetection) {
-                console.log("Alert Type: Pet on Bed");
+            if (petOnObjectDetection) {
+                incidentType = "PetOnObject";
+                //console.log("Alert Type: Pet on Bed");
             }
 
-            startRecording();
+            if (recordClips) {
+                startRecording();
+            }
             lastDetectionsRef.current.push(true);
         } else if (lastDetectionsRef.current.filter(Boolean).length) {
-            startRecording();
-            lastDetectionsRef.current.push(false);
+            if(recordClips) {
+                startRecording();
+                lastDetectionsRef.current.push(false);
+            }
         } else {
             stopRecording();
         }
@@ -159,25 +163,25 @@ function Home() {
         });
     }
 
-    function petOnBed(detections) {
+    function petOnObject(detections) {
         var petBox = null;
-        var bedBox = null;
+        var objectBox = null;
         var typeOfPet = null;
         detections.forEach(prediction => {
             if (prediction['class'] === 'dog' || prediction['class'] === 'cat' || prediction['class'] === 'bird') {
                 petBox = prediction['bbox']
                 typeOfPet = prediction['class']
             }
-            if (prediction['class'] === 'bed') {
-                bedBox = prediction['bbox']
+            if (prediction['class'] === 'bed' || prediction['class'] === 'chair' || prediction['class'] === 'couch') {
+                objectBox = prediction['bbox']
             }
         })
 
-        if ((!(petBox === "undefined" || petBox === null)) && (!(bedBox === "undefined" || bedBox === null))) {
-            if (bedBox[0] < petBox[0] && bedBox[1] < petBox[1]) {
-                if (((petBox[0] + petBox[2]) < (bedBox[0] + bedBox[2]))
-                    && ((petBox[1] + petBox[3]) < (bedBox[1] + bedBox[3]))) {
-                    alert("A " + typeOfPet +  "IS ON THE BED!!!!");
+        if ((!(petBox === "undefined" || petBox === null)) && (!(objectBox === "undefined" || objectBox === null))) {
+            if (objectBox[0] < petBox[0] && objectBox[1] < petBox[1]) {
+                if (((petBox[0] + petBox[2]) < (objectBox[0] + objectBox[2]))
+                    && ((petBox[1] + petBox[3]) < (objectBox[1] + objectBox[3]))) {
+                    console.log("A " + typeOfPet + "IS ON THE FURNITURE!!!!");
                     return true;
                 }
             }
@@ -203,25 +207,28 @@ function Home() {
         if (recordingRef.current) {
             return; // If so, exit the function
         }
+        //Play users STOP audio rrecording recording
+        playAudioOnEvent();
         // Set a flag to indicate that a recording is in progress
         recordingRef.current = true;
         // Create a new Date object to mark the start time of the clip
         const clipStartTime = new Date();
         // Log the start time to the console
         console.log("Clip Start: " + clipStartTime);
+        // Create a new Array object to store type of alerts
         // Generate a new UUID for the clip title and store it in a ref
         currentClipTitleRef.current = uuidv4();
         // Add a new clip object to the clips array with the start time, placeholder end time, incident list, and filename
         clips.Clips.push({
             "start": clipStartTime,
             "end": "temp",
-            "IncidentList":
-            [
-                "type, petType, time",
-                "type, petType, time"
-            ],
+            "IncidentList":[],
             "fileName": `temp.mp4`
         });
+
+        if (!incidentList.includes(incidentType)) {
+            incidentList.push(incidentType);
+        }
 
         recorderRef.current = new MediaRecorder(window.stream)
         recorderRef.current.ondataavailable = async function (e) {
@@ -236,7 +243,7 @@ function Home() {
                 clips.Clips[clips.Clips.length - 1].fileName = `${title}.mp4`;
                 clips.Clips[clips.Clips.length - 1].end = new Date();
 
-            //TODO: Add IncidentList here and pray that the data doesnt freeze and not update :)
+                //TODO: Add IncidentList here and pray that the data doesnt freeze and not update :)
 
             } catch (error) {
                 console.log("Could not update last title, refrence was in use" + error)
@@ -246,7 +253,7 @@ function Home() {
             //console.log([clips.Clips.length - 1]);
 
             const href = URL.createObjectURL(e.data);
-            console.log("Link to clip: " + href);
+            //console.log("Link to clip: " + href);
 
             setRecords(previousRecords => {
                 return [...previousRecords, { href, title }];
@@ -256,15 +263,18 @@ function Home() {
     };
 
     function stopRecording() {
+        console.log("INCIDENT LIST: " + incidentList);
         if (!recordingRef.current) {
             return;
         }
         const currentClipTitle = currentClipTitleRef.current;
-        console.log("uid: " + currentClipTitle);
+        //console.log("uid: " + currentClipTitle);
         recordingRef.current = false;
         recorderRef.current.stop();
         if (currentClipTitle != "" && currentClipTitle != null) clips.Clips[clips.Clips.length - 1].fileName = `${currentClipTitle}.mp4`;
         clips.Clips[clips.Clips.length - 1].end = new Date();
+        clips.Clips[clips.Clips.length - 1].IncidentList = incidentList;
+        
         // temp code for testing purposes
         //console.log(clips)
         lastDetectionsRef.current = [];
@@ -277,27 +287,23 @@ function Home() {
             var confidence = parseFloat(prediction['score'].toFixed(2));
 
             // Which objects to detect
-            if (confidence > 0.4) {
-                if (text === 'person') {
+            if (confidence > confidenceMin) {
+                if (text === 'person' & personDetection) {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#F7F9FB';
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                if (prediction['class'] === 'bed') {
+                if (prediction['class'] === 'bed' || prediction['class'] === 'chair' || prediction['class'] === 'couch') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#31708E'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                if (prediction['class'] === 'dog') {
+                if (prediction['class'] === 'dog' || prediction['class'] === 'cat' || prediction['class'] === 'bird') {
                     text = text[0].toUpperCase() + text.slice(1).toLowerCase()
                     var color = '#687864'
                     setStyle(text, x, y, width, height, color, canvas, confidence);
                 }
-                if (prediction['class'] === 'bowl') {
-                    text = text[0].toUpperCase() + text.slice(1).toLowerCase()
-                    var color = 'green'
-                    setStyle(text, x, y, width, height, color, canvas, confidence);
-                }
+                
             }
         })
     };
@@ -319,7 +325,7 @@ function Home() {
     async function handleSessionEnd() {
         // Save session to datastore
         //console.log(clips)
-        console.log("DateStore" + Object.isFrozen(clips.Clips.length - 1))
+        //console.log("DateStore" + Object.isFrozen(clips.Clips.length - 1))
         await SaveSession(clips, sessionStartTime, sessionEndTime);
         //console.log("Session saved to datastore");
         resetClips();
@@ -346,7 +352,7 @@ function Home() {
                     awayButtonElement.current.setAttribute("hidden", true);
                     homeButtonElement.current.removeAttribute("hidden");
                     stopRecording();
-                    console.log("Clips" + clips);
+                    //console.log("Clips" + clips);
                     handleSessionEnd();
                 }} ref={awayButtonElement}><BiCar /> Away</button>
                 <button id="swap-cam" onClick={() => {

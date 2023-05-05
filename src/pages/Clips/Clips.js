@@ -66,7 +66,7 @@ function Clips() {
             <h1> All Clips </h1>
             <br />
             <div className="cards">
-                <Expander type='single' isCollapsible={true}>
+                <Expander type='single' isCollapsible={true}> 
                     {clip.map((session) => (
                         <Expander type='multiple' isCollapsible={true} key={session.id}>
                             {console.log('SESSION ID: ' + session.id)}
@@ -80,7 +80,10 @@ function Clips() {
                                                     {videoData && videoData[clip.fileName] && (
                                                         <video controls src={videoData[clip.fileName]} className="clip-video" />
                                                     )}
-                                                    <Badge className='petOnBedBadge'>Alert Type</Badge>
+                                                    {clip.IncidentList.map((incident) => (
+                                                            <Badge id={incident.concat("Badge")}>{incident}</Badge>
+                                                        ))
+                                                    }
                                                 </Card>
                                             </Link>
                                         </ExpanderItem>

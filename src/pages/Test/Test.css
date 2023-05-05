@@ -44,3 +44,7 @@
 #video-container{
     display: none;
 }
+
+#dropdownArrow {
+    margin-left: 5px;
+}
