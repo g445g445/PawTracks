@@ -51,5 +51,4 @@ function Trick(props) {
         </>
     )
 }
-
 export default Trick;
