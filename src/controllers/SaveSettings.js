@@ -15,6 +15,7 @@ const saveSettings = async (jsonData) => {
         });
         await DataStore.save(updatedUserSettings);
         console.log('User settings updated successfully');
+        console.log(jsonData);
     } else {
         // If the user does not have a UserSettings object, create a new one with the JSON data
         const newUserSettings = new UserSettings({
@@ -22,6 +23,7 @@ const saveSettings = async (jsonData) => {
         });
         await DataStore.save(newUserSettings);
         console.log('New user settings created successfully');
+        console.log(jsonData);
     }
 };
 export default saveSettings;

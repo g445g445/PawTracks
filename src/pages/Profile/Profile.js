@@ -169,10 +169,11 @@ function Profile() {
     // Used to save the current json settings to the database -BP
     const handleSave = async () => {
         const jsonData = {
-            "name": "John Doe",
-            "email": "john.doe@example.com",
-            "age": 19
-        };
+            "recordClips": isRecordClipsChecked,
+            "minimumConfidence": sliderValue,
+            "personDetection": isPersonDetectionChecked,
+            "restrictedAreas": [] }
+        
         await saveSettings(jsonData);
     };
 
