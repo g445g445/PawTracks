@@ -152,7 +152,7 @@ function Home() {
             // Sets the detection canvas properties to that of the videoElement
             canvasRef.current.width = videoElement.current.srcObject.getVideoTracks()[0].getSettings().width;
             canvasRef.current.height = videoElement.current.srcObject.getVideoTracks()[0].getSettings().height;
-            console.log(confidenceMin);
+            console.debug(confidenceMin);
             // Detects objects in our videoElement using our model
             const detections = await netRef.current.detect(videoElement.current, 5, confidenceMin);
 
