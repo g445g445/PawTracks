@@ -15,6 +15,7 @@ import { playAudioOnEvent } from '../../controllers/AudioPlayerV2';
 //import useAudioPlayer from '../../controllers/AudioPlayer';
 import { DataStore } from '@aws-amplify/datastore';
 import { UserSettings } from '../../models';
+import { MdOutlineScore } from 'react-icons/md';
 
 
 // Global vars for percitent data
@@ -51,38 +52,48 @@ function Home() {
     const currentClipTitleRef = useRef("");
 
     var cameraSelect = "user";
+    var confidenceMin = 0.4;
+    var personDetection = true; 
+    var recordClips= true;
 
-    const [confidenceMin, setConfidenceMin] = useState(0.4);
-    const [personDetection, setPersonDetection] = useState(true);
-    const [recordClips, setRecordClips] = useState(true);
+    //const [confidenceMin, setConfidenceMin] = useState(0.4);
+    //const [personDetection, setPersonDetection] = useState(true);
+    //const [recordClips, setRecordClips] = useState(true);
    // const [isLoading, setLoading] = useState(true);
     const [selectedCamera, setSelectedCamera] = useState('user');
 
-    useEffect(() => {
-        async function fetchUserSettings() {
-            console.log("Fetching user settings");
-            try {
-                const existingUserSettings = await DataStore.query(UserSettings);
-                console.log(existingUserSettings.settings);
-                if (existingUserSettings.length > 0) {
-                    const jsonData = existingUserSettings[0].settings;
-                    // Update global vars with fetched data
-                    setConfidenceMin(jsonData.minimumConfidence);
-                    setPersonDetection(jsonData.personDetection);
-                    setRecordClips(jsonData.recordClips);
-                    console.log(`user settings updated Conf: ${jsonData.minimumConfidence} person: ${jsonData.personDetection} record: ${jsonData.recordClips}`);
-                    //console.log(`user settings are Conf: ${confidenceMin} person: ${personDetection} record: ${recordClips}`  );
-                }
-                else {
-                    setConfidenceMin(0.4);
-                    setPersonDetection(true);
-                    setRecordClips(true);
-                    console.log("no user settings");
-                }
-            } catch (error) {
-                console.error('Failed to fetch user settings:', error);
+    function handleSetConfidenceMin(value) {
+        console.log(`Setting confidenceMin to ${value}`);
+        //setConfidenceMin(value);
+      }
+ 
+      async function fetchUserSettings() {
+        console.log("Fetching user settings");
+        try {
+            const existingUserSettings = await DataStore.query(UserSettings);
+            console.log(existingUserSettings.settings);
+            if (existingUserSettings.length > 0) {
+                const jsonData = existingUserSettings[0].settings;
+                // Update global vars with fetched data
+                confidenceMin = jsonData.minimumConfidence;
+                personDetection = jsonData.personDetection;
+                recordClips = jsonData.recordClips;
+                console.log(`user settings updated Conf: ${jsonData.minimumConfidence} person: ${jsonData.personDetection} record: ${jsonData.recordClips}`);
+                //console.log(`user settings are Conf: ${confidenceMin} person: ${personDetection} record: ${recordClips}`  );
             }
+            else {
+                confidenceMin = .4;
+               // setPersonDetection(true);
+               // setRecordClips(true);
+               // console.log("no user settings");
+            }
+        } catch (error) {
+            console.error('Failed to fetch user settings:', error);
         }
+    }
+
+    useEffect(() => {
+        
         async function getReady() {
             await fetchUserSettings();
             prepare_stream(selectedCamera)
@@ -90,7 +101,7 @@ function Home() {
         
         getReady();
         console.log(`user settings are Conf: ${confidenceMin} person: ${personDetection} record: ${recordClips}`);
-    }, []);
+    }, );
 
     function resetClips() {
         //console.log("DateStore"+Object.isFrozen(clips.Clips.length - 1))  //used to find what was freezing data object
@@ -141,11 +152,12 @@ function Home() {
             // Sets the detection canvas properties to that of the videoElement
             canvasRef.current.width = videoElement.current.srcObject.getVideoTracks()[0].getSettings().width;
             canvasRef.current.height = videoElement.current.srcObject.getVideoTracks()[0].getSettings().height;
-
+            console.log(confidenceMin);
             // Detects objects in our videoElement using our model
-            const detections = await netRef.current.detect(videoElement.current);
+            const detections = await netRef.current.detect(videoElement.current, 5, confidenceMin);
+
             detectionsRef.current = detections;
-            //console.debug(detections);
+            console.debug(detections);
 
             // Draws the canvas
             const canvas = canvasRef.current.getContext("2d");
